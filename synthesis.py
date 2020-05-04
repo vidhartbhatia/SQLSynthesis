@@ -13,7 +13,6 @@ cellBool = Cell.bool
 cellString = Cell.string
 
 operators = ["=", "!=", "<", ">", "<=", ">="]
-# operators = ["="]
 
 def cellEqual(c1, c2):
     return And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2))
@@ -55,7 +54,6 @@ def satisfies_where_helper(input_table, r, where_col_name, where_operator, where
     If(where_operator == StringVal(">"), cellGreaterThan(input_table[where_col_name][r], where_constant), \
     If(where_operator == StringVal("<="), cellLTE(input_table[where_col_name][r], where_constant), \
     If(where_operator == StringVal(">="), cellGTE(input_table[where_col_name][r], where_constant), False))))))
-    # return If(where_operator == StringVal("="), cellEqual(input_table[where_col_name][r], where_constant), False)
 
 def satisfies_where(input_table, r, where_col_name, where_operator, where_constant, where_clause_missing):
     return If(where_clause_missing, True, satisfies_where_helper(input_table, r, where_col_name, where_operator, where_constant))
@@ -68,7 +66,6 @@ def satisfies_where(input_table, r, where_col_name, where_operator, where_consta
 
 
 def generate_query(output_col_names, result_col_names):
-
     # the SELECT part
     query = "SELECT "
     for i,output_col, in enumerate(output_col_names):
@@ -94,40 +91,7 @@ def generate_query(output_col_names, result_col_names):
     return simplify(query)
 
 
-if __name__ == '__main__':
-    name_rows = Array('name_rows', IntSort(), Cell)
-    name_rows = Store(name_rows, 0, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Medha')))
-    name_rows = Store(name_rows, 1, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Vidhart')))
-    name_rows = Store(name_rows, 2, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Jeremy')))
-    name_rows = Store(name_rows, 3, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Ebru')))
-    name_rows = Store(name_rows, 4, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Medha')))
-
-    age_rows = Array('age_rows', IntSort(), Cell)
-    age_rows = Store(age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
-    age_rows = Store(age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
-    age_rows = Store(age_rows, 2, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
-    age_rows = Store(age_rows, 3, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
-    age_rows = Store(age_rows, 4, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
-
-    input_table = Array('input_table', StringSort(), ArraySort(IntSort(), Cell))
-    input_table = Store(input_table, StringVal('Name'), name_rows)
-    input_table = Store(input_table, StringVal('Age'), age_rows)
-
-    output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
-
-    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-    output_table = Store(output_table, StringVal('AGE'), output_age_rows)
-
-    input_col_names = ['Name', 'Age']
-    output_col_names = ['AGE']
-    num_input_rows = 5
-    num_output_rows = 2
-
+def solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows):
     solver = Solver()
 
     # SELECT unknowns
