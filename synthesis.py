@@ -91,18 +91,15 @@ if __name__ == '__main__':
     age_rows = Store(age_rows, 3, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
     age_rows = Store(age_rows, 4, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
 
-    input_table = Array('table', StringSort(), ArraySort(IntSort(), Cell))
+    input_table = Array('input_table', StringSort(), ArraySort(IntSort(), Cell))
     input_table = Store(input_table, StringVal('Name'), name_rows)
     input_table = Store(input_table, StringVal('Age'), age_rows)
 
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    age_rows = Store(age_rows, 0, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
-    # age_rows = Store(age_rows, 1, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
-    # age_rows = Store(age_rows, 2, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
-    # age_rows = Store(age_rows, 3, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
 
-    output_table = Array('table', StringSort(), ArraySort(IntSort(), Cell))
-    output_table = Store(input_table, StringVal('Age'), output_age_rows)
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Age'), output_age_rows)
 
     input_col_names = ['Name', 'Age']
     output_col_names = ['Age']
@@ -160,11 +157,11 @@ if __name__ == '__main__':
         for j in range(i+1, num_output_rows):
             solver.add(Int(f's{i}') != Int(f's{j}'))
 
-    sat = solver.check()
+   
     # print(sat)
-    if sat:
+    if solver.check() == sat:
         # print(solver.model())
-        print("QuerSy generated:")
+        print("Query generated:")
         print(generate_query(output_col_names, select_col_names))
     else:
         print("Unsat")
