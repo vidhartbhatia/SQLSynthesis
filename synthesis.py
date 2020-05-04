@@ -74,6 +74,17 @@ def cellAdd(c1, c2):
 def solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows):
     solver = Solver()
 
+    aggregate_col_names = ['COUNT', 'SUM']
+
+    # SELECT unknowns // TODO add acols
+    select_col_names = [String(f'select_col_name{i}') for i in range(len(output_col_names))]
+
+    # SELECT domain constraints
+    for select_col_name in select_col_names:
+        constraints = [select_col_name == StringVal(input_col_name) for input_col_name in input_col_names]
+        constraints += [select_col_name == StringVal(aggregate_col_name) for aggregate_col_name in aggregate_col_names]
+        solver.add(Or(constraints))
+
      # WHERE unknowns
     where_col_name = String('where_col_name')
     where_operator = String('where_operator')
@@ -87,6 +98,17 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
     for r in range(num_input_rows):
         constraint = Or(constraint, cellEqual(where_constant, input_table[where_col_name][r]))
     solver.add(constraint)
+
+    # add unique and equal cols
+    unique_rows = Array('unique_rows', IntSort(), Cell)
+    equal_rows = Array('equal_rows', IntSort(), Cell)
+    for i in range(num_input_rows):
+        unique_rows = Store(unique_rows, i, cell(StringVal('int'), i, RealVal(0), False, StringVal('')))
+        equal_rows = Store(equal_rows, i, cell(StringVal('int'), 0, RealVal(0), False, StringVal('')))
+
+    input_table = Store(input_table, StringVal('unique_rows'), unique_rows)
+    input_table = Store(input_table, StringVal('equal_rows'), equal_rows)
+    input_col_names += ['unique_rows', 'equal_rows']
 
     # GROUP BY unknown(s)
     group_by_col_name = String('group_by_col_name')
@@ -106,7 +128,6 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
         count_rows = Store(count_rows, r, cell(StringVal('int'), count, RealVal(0), False, StringVal('')))
 
     input_table = Store(input_table, StringVal('COUNT'), count_rows)
-    aggregate_col_names = ['COUNT']
 
      # SUM
     aggregate_column = String('aggregate_column')
@@ -123,7 +144,6 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
         sum_rows = Store(sum_rows, r, sum)
 
     input_table = Store(input_table, StringVal('SUM'), sum_rows)
-    aggregate_col_names += ['SUM']
 
 
 
@@ -139,6 +159,7 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
 
         
    
+
     # row constraints
     # TODO: Optimization
     for r in range(num_input_rows):
@@ -163,13 +184,17 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
    
     # print(sat)
     if solver.check() == sat:
-        print(solver.model())
+        # print(solver.model())
         print("Query generated:")
         # Generate query 
         # the SELECT part
         query = "SELECT "
         for i,output_col, in enumerate(output_col_names):
-            query += solver.model()[select_col_names[i]] + " AS " + output_col
+            col_name = solver.model()[select_col_names[i]]
+            query += col_name
+            # if col_name == StringVal("SUM") or col_name == StringVal("MAX") or col_name == StringVal("MIN"):
+            #     query += "(" + solver.model()[aggregate_col_name] + ")"
+            query += " AS " + output_col
             if i < len(output_col_names) - 1:
                 query += ", "
         query += " FROM input_table"
@@ -179,7 +204,6 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
             query += " WHERE "
             query += solver.model()[where_col_name] + " "
             query += solver.model()[where_operator] + " "
-            # print(print_cell_value(solver.model()[where_constant]))
             if simplify(cellType(solver.model()[where_constant])) == StringVal("int"):
                 query += str((simplify(cellInt(solver.model()[where_constant]))))
             elif simplify(cellType(solver.model()[where_constant])) == StringVal("real"):
@@ -188,6 +212,10 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
                 query += str((simplify(cellBool(solver.model()[where_constant]))))
             elif simplify(cellType(solver.model()[where_constant])) == StringVal("string"):
                 query += str((simplify(cellString(solver.model()[where_constant]))))
+
+        # GROUP BY
+        query += " GROUP BY "
+        query += solver.model()[group_by_col_name]
 
         print(simplify(query))
     else:
