@@ -131,6 +131,7 @@ if __name__ == '__main__':
     for r in range(num_input_rows):
         constraint = Or(constraint, cellEqual(where_constant, input_table[where_col_name][r]))
     solver.add(constraint)
+    print(solver)
     
     # solver.add(Or([cellEqual(where_constant, cell) for cell in input_table[where_col_name]]))
     
@@ -164,7 +165,7 @@ if __name__ == '__main__':
     if sat:
         # print(solver.model())
         print("QuerSy generated:")
-        print(generate_query(output_col_names, result_col_names))
+        print(generate_query(output_col_names, select_col_names))
     else:
         print("Unsat")
 
