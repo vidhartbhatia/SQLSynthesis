@@ -15,6 +15,22 @@ cellString = Cell.string
 def compareCell(c1, c2):
     return And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2))
 
+
+
+
+
+
+
+def generate_query(output_col_names, result_col_names):
+
+    # the SELECT part
+    query = "SELECT "
+    for i,output_col, in enumerate(output_col_names):
+        query += solver.model()[result_col_names[i]] + " AS " + output_col
+
+    return simplify(query)
+
+
 if __name__ == '__main__':
     name_rows = Array('name_rows', IntSort(), Cell)
     name_rows = Store(name_rows, 0, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Medha')))
@@ -34,13 +50,13 @@ if __name__ == '__main__':
     input_table = Store(input_table, StringVal('Name'), name_rows)
     input_table = Store(input_table, StringVal('Age'), age_rows)
 
-    print(simplify(StringVal('Medha') == cellString(input_table[StringVal('Name')][0])))
+    # print(simplify(StringVal('Medha') == cellString(input_table[StringVal('Name')][0])))
 
     output_table = Array('table', StringSort(), ArraySort(IntSort(), Cell))
-    output_table = Store(input_table, StringVal('NAME'), name_rows)
+    output_table = Store(input_table, StringVal('ages'), age_rows)
 
     input_col_names = ['Name', 'Age']
-    output_col_names = ['NAME']
+    output_col_names = ['ages']
     num_rows = 5
 
     solver = Solver()
@@ -67,10 +83,13 @@ if __name__ == '__main__':
             solver.add(compareCell(input_table[input_col_name][r], output_table[output_col_name][s]))
 
     sat = solver.check()
-    print(sat)
+    # print(sat)
     if sat:
-        print(solver.model())
-    
+        # print(solver.model())
+        print("Query generated:")
+        print(generate_query(output_col_names, result_col_names))
+    else:
+        print("Unsat")
 
     
 
