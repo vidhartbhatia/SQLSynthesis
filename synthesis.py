@@ -168,6 +168,10 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
             elif simplify(cellType(solver.model()[where_constant])) == StringVal("string"):
                 query += str((simplify(cellString(solver.model()[where_constant]))))
 
+        # GROUP BY
+        query += " GROUP BY "
+        query += solver.model()[group_by_col_name]
+
         print(simplify(query))
     else:
         print("Unsat")
