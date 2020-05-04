@@ -71,14 +71,7 @@ def satisfies_where(input_table, r, where_col_name, where_operator, where_consta
 def solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows):
     solver = Solver()
 
-    # SELECT unknowns
-    select_col_names = [String(f'select_col_name{i}') for i in range(len(output_col_names))]
-
-    # SELECT domain constraints
-    for select_col_name in select_col_names:
-        solver.add(Or([select_col_name == StringVal(input_col_name) for input_col_name in input_col_names]))
-
-    # WHERE unknowns
+     # WHERE unknowns
     where_col_name = String('where_col_name')
     where_operator = String('where_operator')
     where_constant = Const('where_constant', Cell)
@@ -91,7 +84,41 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
     for r in range(num_input_rows):
         constraint = Or(constraint, cellEqual(where_constant, input_table[where_col_name][r]))
     solver.add(constraint)
+
+    # GROUP BY unknown(s)
+    group_by_col_name = String('group_by_col_name')
+    # GROUP BY domain constraints
+    solver.add(Or([group_by_col_name == StringVal(input_col_name) for input_col_name in input_col_names]))
+
+    # compute aggregate columns
+
+    # COUNT
+    count_rows = Array('count_rows', IntSort(), Cell)
+
+    for r in range(num_input_rows):
+        # // create the cell to put inside
+        sum = IntVal(0)
+        for i in range(num_input_rows):
+            sum += If(And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),1,0)
+        count_rows = Store(count_rows, r, cell(StringVal('int'), sum, RealVal(0), False, StringVal('')))
+
+    input_table = Store(input_table, StringVal('count'), count_rows)
+    aggregate_col_names = ['count']
+
+
+    # SELECT unknowns // TODO add acols
+    select_col_names = [String(f'select_col_name{i}') for i in range(len(output_col_names))]
+
+    # SELECT domain constraints
+    for select_col_name in select_col_names:
+        constraints = [select_col_name == StringVal(input_col_name) for input_col_name in input_col_names]
+        constraints += [select_col_name == StringVal(aggregate_col_name) for aggregate_col_name in aggregate_col_names]
+        solver.add(Or(constraints))
         
+
+        
+   
+    # row constraints
     # TODO: Optimization
     for r in range(num_input_rows):
         s = Int(f's{r}')
@@ -115,6 +142,7 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
    
     # print(sat)
     if solver.check() == sat:
+        print(solver.model())
         print("Query generated:")
         # Generate query 
         # the SELECT part
