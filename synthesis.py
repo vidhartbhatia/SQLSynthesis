@@ -92,15 +92,11 @@ if __name__ == '__main__':
     input_table = Store(input_table, StringVal('Age'), age_rows)
 
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-<<<<<<< HEAD
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
-=======
     output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
     output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
     output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
     output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
     output_age_rows = Store(output_age_rows, 4, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
->>>>>>> c6b7b3deb5d3d23f961b834f31fcf6a3362ad9ca
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
     output_table = Store(output_table, StringVal('Age'), output_age_rows)
