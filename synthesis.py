@@ -12,8 +12,53 @@ cellReal = Cell.real
 cellBool = Cell.bool
 cellString = Cell.string
 
-def compareCell(c1, c2):
-    return And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2))
+operators = ["=", "!=", "<", ">", "<=", ">="]
+# operators = ["=", "<="]
+
+def cellEqual(c1, c2):
+    return And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2))
+
+def cellNotEqual(c1, c2):
+    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) != cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) != cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('bool'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) != cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) != cellString(c2))))))
+
+def cellLessThan(c1, c2):
+    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) < cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) < cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('bool'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) < cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) < cellString(c2))))))
+
+def cellGreaterThan(c1, c2):
+    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) > cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) > cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('bool'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) > cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) > cellString(c2))))))
+
+def cellLTE(c1, c2):
+    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) <= cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) <= cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('bool'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) <= cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) <= cellString(c2))))))
+
+def cellGTE(c1, c2):
+    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) >= cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) >= cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('bool'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) >= cellBool(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2),  cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) >= cellString(c2))))))
+
+def satisfies_where_helper(input_table, r, where_col_name, where_operator, where_constant):
+    return If(where_operator == StringVal("="), cellEqual(input_table[where_col_name][r], where_constant), \
+    If(where_operator == StringVal("!="), cellNotEqual(input_table[where_col_name][r], where_constant), \
+    If(where_operator == StringVal("<"), cellLessThan(input_table[where_col_name][r], where_constant), \
+    If(where_operator == StringVal(">"), cellGreaterThan(input_table[where_col_name][r], where_constant), \
+    If(where_operator == StringVal("<="), cellLTE(input_table[where_col_name][r], where_constant), \
+    If(where_operator == StringVal(">="), cellGTE(input_table[where_col_name][r], where_constant), False))))))
+    # return If(where_operator == StringVal("="), cellEqual(input_table[where_col_name][r], where_constant), If(where_operator == StringVal("<="), cellLTE(input_table[where_col_name][r], where_constant), False))
+
+def satisfies_where(input_table, r, where_col_name, where_operator, where_constant, where_clause_missing):
+    return If(where_clause_missing, True, satisfies_where_helper(input_table, r, where_col_name, where_operator, where_constant))
 
 
 
@@ -53,40 +98,54 @@ if __name__ == '__main__':
     # print(simplify(StringVal('Medha') == cellString(input_table[StringVal('Name')][0])))
 
     output_table = Array('table', StringSort(), ArraySort(IntSort(), Cell))
-    output_table = Store(input_table, StringVal('ages'), age_rows)
+    output_table = Store(input_table, StringVal('Age'), age_rows)
 
     input_col_names = ['Name', 'Age']
-    output_col_names = ['ages']
+    output_col_names = ['Age']
     num_rows = 5
 
     solver = Solver()
 
-    result_col_names = [String(f'result_col_name{i}') for i in range(len(output_col_names))]
+    # SELECT unknowns
+    select_col_names = [String(f'select_col_name{i}') for i in range(len(output_col_names))]
 
     # SELECT domain constraints
-    for result_col_name in result_col_names:
-        solver.add(Or([result_col_name == StringVal(input_col_name) for input_col_name in input_col_names]))
+    for select_col_name in select_col_names:
+        solver.add(Or([select_col_name == StringVal(input_col_name) for input_col_name in input_col_names]))
+
+    # WHERE unknowns
+    where_col_name = String('where_col_name')
+    where_operator = String('where_operator')
+    where_constant = Const('where_constant', Cell)
+    where_clause_missing = Bool('where_clause_missing')
+
+    # WHERE domain constraints
+    solver.add(Or([where_col_name == StringVal(input_col_name) for input_col_name in input_col_names]))
+    solver.add(Or([where_operator == StringVal(operator) for operator in operators]))
+    solver.add(Or([cellEqual(where_constant, cell) for cell in input_table[where_col_name]]))
     
     # TODO: Optimization
     for c in range(len(output_col_names)):
         for r in range(0, num_rows):
+            solver.add(satisfies_where(input_table, r, where_col_name, where_operator, where_constant, where_clause_missing))
             s = Int(f's{r}')
             solver.add(And(s >= 0, s < num_rows))
-            input_col_name = result_col_names[c]
+            input_col_name = select_col_names[c]
             output_col_name = StringVal(output_col_names[c])
-            solver.add(compareCell(input_table[input_col_name][r], output_table[output_col_name][s]))
+            solver.add(cellEqual(input_table[input_col_name][r], output_table[output_col_name][s]))
         for s in range(0, num_rows):
             r = Int(f'r{s}')
             solver.add(And(r >= 0, r < num_rows))
-            input_col_name = result_col_names[c]
+            solver.add(satisfies_where(input_table, r, where_col_name, where_operator, where_constant, where_clause_missing))
+            input_col_name = select_col_names[c]
             output_col_name = StringVal(output_col_names[c])
-            solver.add(compareCell(input_table[input_col_name][r], output_table[output_col_name][s]))
+            solver.add(cellEqual(input_table[input_col_name][r], output_table[output_col_name][s]))
 
     sat = solver.check()
     # print(sat)
     if sat:
         # print(solver.model())
-        print("Query generated:")
+        print("QuerSy generated:")
         print(generate_query(output_col_names, result_col_names))
     else:
         print("Unsat")
