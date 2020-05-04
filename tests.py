@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
     output_table = Store(output_table, StringVal('AGE'), output_age_rows)
-    output_col_names = ['Age']
+    output_col_names = ['AGE']
     num_output_rows = 2
 
     print('Test 3')

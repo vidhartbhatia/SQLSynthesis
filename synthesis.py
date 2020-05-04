@@ -65,30 +65,7 @@ def satisfies_where(input_table, r, where_col_name, where_operator, where_consta
 #     If(cellType(c) == StringVal('string'), cellString(c), StringVal('ERROR')))))
 
 
-def generate_query(output_col_names, result_col_names):
-    # the SELECT part
-    query = "SELECT "
-    for i,output_col, in enumerate(output_col_names):
-        query += solver.model()[result_col_names[i]] + " AS " + output_col
-
-    query += " FROM input_table"
-
-    # where
-    if is_false(solver.model()[where_clause_missing]):
-        query += " WHERE "
-        query += solver.model()[where_col_name] + " "
-        query += solver.model()[where_operator] + " "
-        # print(print_cell_value(solver.model()[where_constant]))
-        if simplify(cellType(solver.model()[where_constant])) == StringVal("int"):
-            query += str((simplify(cellInt(solver.model()[where_constant]))))
-        elif simplify(cellType(solver.model()[where_constant])) == StringVal("real"):
-            query += str((simplify(cellReal(solver.model()[where_constant]))))
-        elif simplify(cellType(solver.model()[where_constant])) == StringVal("bool"):
-            query += str((simplify(cellBool(solver.model()[where_constant]))))
-        elif simplify(cellType(solver.model()[where_constant])) == StringVal("string"):
-            query += str((simplify(cellString(solver.model()[where_constant]))))
-
-    return simplify(query)
+   
 
 
 def solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows):
@@ -138,9 +115,30 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
    
     # print(sat)
     if solver.check() == sat:
-        # print(solver.model())
         print("Query generated:")
-        print(generate_query(output_col_names, select_col_names))
+        # Generate query 
+        # the SELECT part
+        query = "SELECT "
+        for i,output_col, in enumerate(output_col_names):
+            query += solver.model()[select_col_names[i]] + " AS " + output_col
+        query += " FROM input_table"
+
+        # WHERE
+        if is_false(solver.model()[where_clause_missing]):
+            query += " WHERE "
+            query += solver.model()[where_col_name] + " "
+            query += solver.model()[where_operator] + " "
+            # print(print_cell_value(solver.model()[where_constant]))
+            if simplify(cellType(solver.model()[where_constant])) == StringVal("int"):
+                query += str((simplify(cellInt(solver.model()[where_constant]))))
+            elif simplify(cellType(solver.model()[where_constant])) == StringVal("real"):
+                query += str((simplify(cellReal(solver.model()[where_constant]))))
+            elif simplify(cellType(solver.model()[where_constant])) == StringVal("bool"):
+                query += str((simplify(cellBool(solver.model()[where_constant]))))
+            elif simplify(cellType(solver.model()[where_constant])) == StringVal("string"):
+                query += str((simplify(cellString(solver.model()[where_constant]))))
+
+        print(simplify(query))
     else:
         print("Unsat")
 
