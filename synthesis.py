@@ -58,14 +58,17 @@ def satisfies_where_helper(input_table, r, where_col_name, where_operator, where
 def satisfies_where(input_table, r, where_col_name, where_operator, where_constant, where_clause_missing):
     return If(where_clause_missing, True, satisfies_where_helper(input_table, r, where_col_name, where_operator, where_constant))
 
-# def print_cell_value(c):
+# def cell_value(c):
 #     return If(cellType(c) == StringVal('int'), cellInt(c), \
 #     If(cellType(c) == StringVal('real'), cellReal(c) , \
 #     If(cellType(c) == StringVal('bool'), cellBool(c), \
-#     If(cellType(c) == StringVal('string'), cellString(c), StringVal('ERROR')))))
+#     If(cellType(c) == StringVal('string'), cellString(c), 0))))
 
-
-   
+def cellAdd(c1, c2):
+    return  If(cellType(c1) == StringVal('int'), cell(StringVal('int'), cellInt(c1) + cellInt(c2) , RealVal(0), False, StringVal('')) , \
+    If(cellType(c1) == StringVal('real'), cell(StringVal('int'), 0 , cellReal(c1) + cellReal(c2), False, StringVal('')) ,  \
+    If(cellType(c1) == StringVal('bool'), cell(StringVal('int'), 0 ,RealVal(0), cellBool(c1), StringVal('')) , \
+    If(cellType(c1) == StringVal('string'), cell(StringVal('int'), 0 , RealVal(0), False, cellString(c1) + cellString(c2)), cell(cellType(c1), 0, RealVal(0), False, StringVal(''))))))
 
 
 def solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows):
@@ -96,17 +99,35 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
     count_rows = Array('count_rows', IntSort(), Cell)
 
     for r in range(num_input_rows):
-        # // create the cell to put inside
-        sum = IntVal(0)
+        # create the cell to put inside
+        count = IntVal(0)
         for i in range(num_input_rows):
-            sum += If(And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),1,0)
-        count_rows = Store(count_rows, r, cell(StringVal('int'), sum, RealVal(0), False, StringVal('')))
+            count += If(And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),1,0)
+        count_rows = Store(count_rows, r, cell(StringVal('int'), count, RealVal(0), False, StringVal('')))
 
-    input_table = Store(input_table, StringVal('count'), count_rows)
-    aggregate_col_names = ['count']
+    input_table = Store(input_table, StringVal('COUNT'), count_rows)
+    aggregate_col_names = ['COUNT']
+
+     # SUM
+    aggregate_column = String('aggregate_column')
+    solver.add(Or([aggregate_column == StringVal(input_col_name) for input_col_name in input_col_names]))
+
+    sum_rows = Array('sum_rows', IntSort(), Cell)
+
+    for r in range(num_input_rows):
+        sum = cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), False, StringVal(''))
+        for i in range(num_input_rows):
+            sum = cellAdd(sum,If(And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), \
+                cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),input_table[aggregate_column][r], \
+                cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), False, StringVal(''))))
+        sum_rows = Store(sum_rows, r, sum)
+
+    input_table = Store(input_table, StringVal('SUM'), sum_rows)
+    aggregate_col_names += ['SUM']
 
 
-    # SELECT unknowns // TODO add acols
+
+    # SELECT unknowns 
     select_col_names = [String(f'select_col_name{i}') for i in range(len(output_col_names))]
 
     # SELECT domain constraints
