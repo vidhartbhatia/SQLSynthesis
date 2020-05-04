@@ -60,6 +60,11 @@ def satisfies_where_helper(input_table, r, where_col_name, where_operator, where
 def satisfies_where(input_table, r, where_col_name, where_operator, where_constant, where_clause_missing):
     return If(where_clause_missing, True, satisfies_where_helper(input_table, r, where_col_name, where_operator, where_constant))
 
+# def print_cell_value(c):
+#     return If(cellType(c) == StringVal('int'), cellInt(c), \
+#     If(cellType(c) == StringVal('real'), cellReal(c) , \
+#     If(cellType(c) == StringVal('bool'), cellBool(c), \
+#     If(cellType(c) == StringVal('string'), cellString(c), StringVal('ERROR')))))
 
 
 def generate_query(output_col_names, result_col_names):
@@ -68,6 +73,23 @@ def generate_query(output_col_names, result_col_names):
     query = "SELECT "
     for i,output_col, in enumerate(output_col_names):
         query += solver.model()[result_col_names[i]] + " AS " + output_col
+
+    query += " FROM input_table"
+
+    # where
+    if is_false(solver.model()[where_clause_missing]):
+        query += " WHERE "
+        query += solver.model()[where_col_name] + " "
+        query += solver.model()[where_operator] + " "
+        # print(print_cell_value(solver.model()[where_constant]))
+        if simplify(cellType(solver.model()[where_constant])) == StringVal("int"):
+            query += str((simplify(cellInt(solver.model()[where_constant]))))
+        elif simplify(cellType(solver.model()[where_constant])) == StringVal("real"):
+            query += str((simplify(cellReal(solver.model()[where_constant]))))
+        elif simplify(cellType(solver.model()[where_constant])) == StringVal("bool"):
+            query += str((simplify(cellBool(solver.model()[where_constant]))))
+        elif simplify(cellType(solver.model()[where_constant])) == StringVal("string"):
+            query += str((simplify(cellString(solver.model()[where_constant]))))
 
     return simplify(query)
 
@@ -78,7 +100,7 @@ if __name__ == '__main__':
     name_rows = Store(name_rows, 1, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Vidhart')))
     name_rows = Store(name_rows, 2, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Jeremy')))
     name_rows = Store(name_rows, 3, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Ebru')))
-    name_rows = Store(name_rows, 4, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Udit')))
+    name_rows = Store(name_rows, 4, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Medha')))
 
     age_rows = Array('age_rows', IntSort(), Cell)
     age_rows = Store(age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
@@ -93,18 +115,18 @@ if __name__ == '__main__':
 
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
     output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 4, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
+    # output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
+    # output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
+    # output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-    output_table = Store(output_table, StringVal('Age'), output_age_rows)
+    output_table = Store(output_table, StringVal('AGE'), output_age_rows)
 
     input_col_names = ['Name', 'Age']
-    output_col_names = ['Age']
+    output_col_names = ['AGE']
     num_input_rows = 5
-    num_output_rows = 5
+    num_output_rows = 2
 
     solver = Solver()
 
