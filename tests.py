@@ -158,4 +158,38 @@ if __name__ == "__main__":
     print('Test 9')
     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
 
+    # OUTPUT TABLE 10
+    output_name_rows = Array('output_name_rows', IntSort(), Cell)
+    output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Medha')))
+    output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Vidhart')))
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
+
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Name'), output_name_rows)
+    output_table = Store(output_table, StringVal('Age'), output_age_rows)
+    output_col_names = ['Name', 'Age']
+    num_output_rows = 2
+
+    print('Test 10')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+
+    # OUTPUT TABLE 11
+    output_name_rows = Array('output_name_rows', IntSort(), Cell)
+    output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Medha')))
+    output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Vidhart')))
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
+
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Name'), output_name_rows)
+    output_table = Store(output_table, StringVal('Age'), output_age_rows)
+    output_col_names = ['Name', 'Age']
+    num_output_rows = 2
+
+    print('Test 11')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+
 

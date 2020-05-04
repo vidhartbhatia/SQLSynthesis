@@ -92,7 +92,6 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
         constraint = Or(constraint, cellEqual(where_constant, input_table[where_col_name][r]))
     solver.add(constraint)
         
-    # TODO: Optimization
     for r in range(num_input_rows):
         s = Int(f's{r}')
         solver.add(And(s >= 0, s < num_output_rows))
@@ -121,6 +120,8 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
         query = "SELECT "
         for i,output_col, in enumerate(output_col_names):
             query += solver.model()[select_col_names[i]] + " AS " + output_col
+            if i < len(output_col_names) - 1:
+                query += ", "
         query += " FROM input_table"
 
         # WHERE
