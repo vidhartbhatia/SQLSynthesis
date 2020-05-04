@@ -34,10 +34,26 @@ if __name__ == "__main__":
 
      # OUTPUT TABLE sum
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 44, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 110, RealVal(0), False, StringVal('')))
+    # output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
+    # output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
+    # output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
+
+
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Sum'), output_age_rows)
+    output_col_names = ['Sum']
+    num_output_rows = 1
+
+    print('Test sum')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+
+    # OUTPUT TABLE count
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 2, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 1, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 1, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 1, RealVal(0), False, StringVal('')))
 
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
@@ -48,39 +64,23 @@ if __name__ == "__main__":
     print('Test count')
     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
 
-    # # OUTPUT TABLE count
-    # output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    # output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 2, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 1, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 1, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 1, RealVal(0), False, StringVal('')))
 
 
-    # output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-    # output_table = Store(output_table, StringVal('Count'), output_age_rows)
-    # output_col_names = ['Count']
-    # num_output_rows = 4
+    # OUTPUT TABLE 1
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 4, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
 
-    # print('Test count')
-    # solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Age'), output_age_rows)
+    output_col_names = ['Age']
+    num_output_rows = 5
 
-
-
-    # # OUTPUT TABLE 1
-    # output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    # output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 4, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
-
-    # output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-    # output_table = Store(output_table, StringVal('Age'), output_age_rows)
-    # output_col_names = ['Age']
-    # num_output_rows = 5
-
-    # print('Test 1')
-    # solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('Test 1')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
 
 
     # # OUTPUT TABLE 2

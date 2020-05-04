@@ -66,15 +66,17 @@ def satisfies_where(input_table, r, where_col_name, where_operator, where_consta
 
 def cellAdd(c1, c2):
     return  If(cellType(c1) == StringVal('int'), cell(StringVal('int'), cellInt(c1) + cellInt(c2) , RealVal(0), False, StringVal('')) , \
-    If(cellType(c1) == StringVal('real'), cell(StringVal('int'), 0 , cellReal(c1) + cellReal(c2), False, StringVal('')) ,  \
-    If(cellType(c1) == StringVal('bool'), cell(StringVal('int'), 0 ,RealVal(0), cellBool(c1), StringVal('')) , \
-    If(cellType(c1) == StringVal('string'), cell(StringVal('int'), 0 , RealVal(0), False, cellString(c1) + cellString(c2)), cell(cellType(c1), 0, RealVal(0), False, StringVal(''))))))
+    If(cellType(c1) == StringVal('real'), cell(StringVal('real'), 0 , cellReal(c1) + cellReal(c2), False, StringVal('')) ,  \
+    If(cellType(c1) == StringVal('bool'), cell(StringVal('bool'), 0 ,RealVal(0), cellBool(c1), StringVal('')) , \
+    If(cellType(c1) == StringVal('string'), cell(StringVal('string'), 0 , RealVal(0), False, cellString(c1) + cellString(c2)), cell(cellType(c1), 0, RealVal(0), False, StringVal(''))))))
 
 
 def solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows):
     solver = Solver()
 
     aggregate_col_names = ['COUNT', 'SUM']
+    aggregate_column = String('aggregate_column')
+    solver.add(Or([aggregate_column == StringVal(input_col_name) for input_col_name in input_col_names]))
 
     # SELECT unknowns // TODO add acols
     select_col_names = [String(f'select_col_name{i}') for i in range(len(output_col_names))]
@@ -108,12 +110,15 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
 
     input_table = Store(input_table, StringVal('unique_rows'), unique_rows)
     input_table = Store(input_table, StringVal('equal_rows'), equal_rows)
-    input_col_names += ['unique_rows', 'equal_rows']
+    group_by_column_names = ['unique_rows', 'equal_rows']
 
     # GROUP BY unknown(s)
     group_by_col_name = String('group_by_col_name')
     # GROUP BY domain constraints
-    solver.add(Or([group_by_col_name == StringVal(input_col_name) for input_col_name in input_col_names]))
+    # solver.add(Or([group_by_col_name == StringVal(input_col_name) for input_col_name in input_col_names]))
+    g_constraints = [group_by_col_name == StringVal(input_col_name) for input_col_name in input_col_names]
+    g_constraints += [group_by_col_name == StringVal(c) for c in group_by_column_names]
+    solver.add(Or(g_constraints))
 
     # compute aggregate columns
 
@@ -130,8 +135,7 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
     input_table = Store(input_table, StringVal('COUNT'), count_rows)
 
      # SUM
-    aggregate_column = String('aggregate_column')
-    solver.add(Or([aggregate_column == StringVal(input_col_name) for input_col_name in input_col_names]))
+  
 
     sum_rows = Array('sum_rows', IntSort(), Cell)
 
@@ -145,20 +149,6 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
 
     input_table = Store(input_table, StringVal('SUM'), sum_rows)
 
-
-
-    # SELECT unknowns 
-    select_col_names = [String(f'select_col_name{i}') for i in range(len(output_col_names))]
-
-    # SELECT domain constraints
-    for select_col_name in select_col_names:
-        constraints = [select_col_name == StringVal(input_col_name) for input_col_name in input_col_names]
-        constraints += [select_col_name == StringVal(aggregate_col_name) for aggregate_col_name in aggregate_col_names]
-        solver.add(Or(constraints))
-        
-
-        
-   
 
     # row constraints
     # TODO: Optimization
@@ -184,7 +174,7 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
    
     # print(sat)
     if solver.check() == sat:
-        # print(solver.model())
+        print(solver.model())
         print("Query generated:")
         # Generate query 
         # the SELECT part
@@ -192,8 +182,8 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
         for i,output_col, in enumerate(output_col_names):
             col_name = solver.model()[select_col_names[i]]
             query += col_name
-            # if col_name == StringVal("SUM") or col_name == StringVal("MAX") or col_name == StringVal("MIN"):
-            #     query += "(" + solver.model()[aggregate_col_name] + ")"
+            if col_name == StringVal("SUM") or col_name == StringVal("MAX") or col_name == StringVal("MIN"):
+                query += "(" + solver.model()[aggregate_column] + ")"
             query += " AS " + output_col
             if i < len(output_col_names) - 1:
                 query += ", "
