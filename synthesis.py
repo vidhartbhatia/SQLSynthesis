@@ -75,6 +75,7 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
     solver = Solver()
 
     aggregate_col_names = ['COUNT', 'SUM']
+    # aggregate_col_names = []
     aggregate_column = String('aggregate_column')
     solver.add(Or([aggregate_column == StringVal(input_col_name) for input_col_name in input_col_names]))
 
@@ -120,7 +121,39 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
     g_constraints += [group_by_col_name == StringVal(c) for c in group_by_column_names]
     solver.add(Or(g_constraints))
 
+
+    # booleans representing if row satisfies where
+    r_bools = [Bool(f'r{i}_satisfies') for i in range(num_input_rows)]
+    solver.add(And([r_bools[r] == satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing) for r in range(num_input_rows)]))
+
     # compute aggregate columns
+
+     # SUM
+    sum_rows = Array('sum_rows', IntSort(), Cell)
+
+    # for r in range(num_input_rows):
+    #     sump = cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), False, StringVal(''))
+    #     for i in range(num_input_rows):
+    #         sump = cellAdd(sump,If(And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), \
+    #             cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),input_table[aggregate_column][i], \
+    #             cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), False, StringVal(''))))
+    #     sum_rows = Store(sum_rows, r, sump)
+
+    for r in range(num_input_rows):
+        sump = IntVal(0)
+        # bools = []
+        for i in range(num_input_rows):
+            # b = Bool(f'bsum{r}_{i}')
+            # bools.append(b)
+            # sump = sump + If(b,cellInt(input_table[aggregate_column][i]),IntVal(0))
+            # sump = sump + If(And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),cellInt(input_table[aggregate_column][i]),IntVal(0))
+            sump = sump + If(And(r_bools[r], cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),cellInt(input_table[aggregate_column][i]),IntVal(0))
+        sum_rows = Store(sum_rows, r, cell(StringVal('int'), sump, RealVal(0), False, StringVal('')))
+        # solver.add([b == And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])) for i,b in enumerate(bools)])
+
+    input_table = Store(input_table, StringVal('SUM'), sum_rows)
+
+
 
     # COUNT
     count_rows = Array('count_rows', IntSort(), Cell)
@@ -128,53 +161,54 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
     for r in range(num_input_rows):
         # create the cell to put inside
         count = IntVal(0)
+        # bools = []
+        # bsat = Bool(f'bcount{r}')
         for i in range(num_input_rows):
-            count += If(And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),1,0)
+            # b = Bool(f'bcount{r}_{i}')
+            # bools.append(b)
+            # count = count +  If(And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),1,0)
+            # count = count + If(b,1,0)
+            count = count + If(And(r_bools[r], cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),1,0)
         count_rows = Store(count_rows, r, cell(StringVal('int'), count, RealVal(0), False, StringVal('')))
-
+        # solver.add([b == And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])) for i,b in enumerate(bools)])
+        # solver.add(bsat == satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing))
     input_table = Store(input_table, StringVal('COUNT'), count_rows)
-
-     # SUM
-  
-
-    sum_rows = Array('sum_rows', IntSort(), Cell)
-
-    for r in range(num_input_rows):
-        sum = cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), False, StringVal(''))
-        for i in range(num_input_rows):
-            sum = cellAdd(sum,If(And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), \
-                cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),input_table[aggregate_column][r], \
-                cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), False, StringVal(''))))
-        sum_rows = Store(sum_rows, r, sum)
-
-    input_table = Store(input_table, StringVal('SUM'), sum_rows)
-
+    # solver.add(input_table)
+    # print(simplify(input_table))
 
     # row constraints
     # TODO: Optimization
+    s_vars = []
+    r_vars = []
     for r in range(num_input_rows):
         s = Int(f's{r}')
+        s_vars.append(s)
         solver.add(And(s >= 0, s < num_output_rows))
         implication = And([cellEqual(input_table[select_col_names[c]][r], output_table[StringVal(output_col_names[c])][s]) for c in range(len(select_col_names))])
-        solver.add(Implies(satisfies_where(input_table, r, where_col_name, where_operator, where_constant, where_clause_missing), implication))
+        # solver.add(Implies(satisfies_where(input_table, r, where_col_name, where_operator, where_constant, where_clause_missing), implication))
+        solver.add(Implies(r_bools[r], implication))
+
     for s in range(num_output_rows):
         r = Int(f'r{s}')
+        r_vars.append(r)
         solver.add(And(r >= 0, r < num_input_rows))
+        # solver.add(satisfies_where(input_table, r, where_col_name, where_operator, where_constant, where_clause_missing))
         solver.add(satisfies_where(input_table, r, where_col_name, where_operator, where_constant, where_clause_missing))
         solver.add(And([cellEqual(input_table[select_col_names[c]][r], output_table[StringVal(output_col_names[c])][s]) for c in range(len(select_col_names))]))
 
-    for i in range(num_input_rows-1):
-        for j in range(i+1, num_input_rows):
-            solver.add(Int(f'r{i}') != Int(f'r{j}'))
+    # for i in range(num_input_rows-1):
+    #     for j in range(i+1, num_input_rows):
+    #         solver.add(Int(f'r{i}') != Int(f'r{j}'))
 
     for i in range(num_output_rows-1):
         for j in range(i+1, num_output_rows):
-            solver.add(Int(f's{i}') != Int(f's{j}'))
+            solver.add(r_vars[i] != r_vars[j])
 
    
     # print(sat)
+    # print(r_bools)
     if solver.check() == sat:
-        print(solver.model())
+        print((solver.model()))
         print("Query generated:")
         # Generate query 
         # the SELECT part
@@ -204,9 +238,12 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
                 query += str((simplify(cellString(solver.model()[where_constant]))))
 
         # GROUP BY
-        query += " GROUP BY "
-        query += solver.model()[group_by_col_name]
-
+        gb_col_name = solver.model()[group_by_col_name]
+        if gb_col_name == StringVal('unique_rows'):
+            print()
+        else:
+            query += " GROUP BY " + solver.model()[group_by_col_name]
+           
         print(simplify(query))
     else:
         print("Unsat")
