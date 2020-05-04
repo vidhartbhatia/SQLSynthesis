@@ -15,10 +15,19 @@ age_rows = Store(age_rows, 2, cell(StringVal('int'), 22, RealVal(0), False, Stri
 age_rows = Store(age_rows, 3, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
 age_rows = Store(age_rows, 4, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
 
+score_rows = Array('score_rows', IntSort(), Cell)
+score_rows = Store(score_rows, 0, cell(StringVal('real'), 0, RealVal(50.0), False, StringVal('')))
+score_rows = Store(score_rows, 1, cell(StringVal('real'), 0, RealVal(12.5), False, StringVal('')))
+score_rows = Store(score_rows, 2, cell(StringVal('real'), 0, RealVal(0.5), False, StringVal('')))
+score_rows = Store(score_rows, 3, cell(StringVal('real'), 0, RealVal(99.9), False, StringVal('')))
+score_rows = Store(score_rows, 4, cell(StringVal('real'), 0, RealVal(100.0), False, StringVal('')))
+
 input_table = Array('input_table', StringSort(), ArraySort(IntSort(), Cell))
 input_table = Store(input_table, StringVal('Name'), name_rows)
 input_table = Store(input_table, StringVal('Age'), age_rows)
-input_col_names = ['Name', 'Age']
+input_table = Store(input_table, StringVal('Score'), score_rows)
+
+input_col_names = ['Name', 'Age', 'Score']
 num_input_rows = 5
 
 if __name__ == "__main__":
