@@ -149,6 +149,8 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
         query = "SELECT "
         for i,output_col, in enumerate(output_col_names):
             query += solver.model()[select_col_names[i]] + " AS " + output_col
+            if i < len(output_col_names) - 1:
+                query += ", "
         query += " FROM input_table"
 
         # WHERE
