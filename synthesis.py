@@ -2,50 +2,43 @@ from z3 import *
 from itertools import *
 
 Cell = Datatype('Cell')
-Cell.declare('cell', ('type', StringSort()), ('int', IntSort()), ('real', RealSort()), 
-                    ('bool', BoolSort()), ('string', StringSort()))
+Cell.declare('cell', ('type', StringSort()), ('int', IntSort()), ('real', RealSort()), ('string', StringSort()))
 Cell = Cell.create()
 cell = Cell.cell
 cellType = Cell.type
 cellInt = Cell.int
 cellReal = Cell.real
-cellBool = Cell.bool
 cellString = Cell.string
 
 operators = ["=", "!=", "<", ">", "<=", ">="]
 
 def cellEqual(c1, c2):
-    return And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2))
+    return And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) == cellString(c2))
 
 def cellNotEqual(c1, c2):
-    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) != cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) != cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('bool'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) != cellBool(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) != cellString(c2)), False))))
+    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) != cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) != cellReal(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) != cellString(c2)), False))))
 
 def cellLessThan(c1, c2):
-    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) < cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) < cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('bool'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), False), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) < cellString(c2)), False))))
+    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) < cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) < cellReal(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) < cellString(c2)), False))))
 
 def cellGreaterThan(c1, c2):
-    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) > cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) > cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('bool'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), False), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) > cellString(c2)), False))))
+    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) > cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) > cellReal(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) > cellString(c2)), False))))
 
 def cellLTE(c1, c2):
-    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) <= cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) <= cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('bool'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), False), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) <= cellString(c2)), False))))
+    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) <= cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) <= cellReal(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) <= cellString(c2)), False))))
 
 def cellGTE(c1, c2):
-    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) >= cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) >= cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('bool'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), False), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellBool(c1) == cellBool(c2)), cellString(c1) >= cellString(c2)), False))))
+    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) >= cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) >= cellReal(c2)), cellString(c1) == cellString(c2)), \
+    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) >= cellString(c2)), False))))
 
 def satisfies_where_helper(input_table, r, where_col_name, where_operator, where_constant):
     return If(where_operator == StringVal("="), cellEqual(input_table[where_col_name][r], where_constant), \
@@ -65,9 +58,8 @@ def satisfies_where(input_table, r, where_col_name, where_operator, where_consta
 #     If(cellType(c) == StringVal('string'), cellString(c), 0))))
 
 def cellAdd(c1, c2):
-    return  If(cellType(c1) == StringVal('int'), cell(StringVal('int'), cellInt(c1) + cellInt(c2) , RealVal(0), False, StringVal('')) , \
+    return If(cellType(c1) == StringVal('int'), cell(StringVal('int'), cellInt(c1) + cellInt(c2) , RealVal(0), False, StringVal('')) , \
     If(cellType(c1) == StringVal('real'), cell(StringVal('real'), 0 , cellReal(c1) + cellReal(c2), False, StringVal('')) ,  \
-    If(cellType(c1) == StringVal('bool'), cell(StringVal('bool'), 0 , RealVal(0), cellBool(c1), StringVal('')) , \
     If(cellType(c1) == StringVal('string'), cell(StringVal('string'), 0 , RealVal(0), False, StringVal('')), cell(cellType(c1), 0, RealVal(0), False, StringVal(''))))))
 
 def cellMax(c1, c2):
@@ -78,13 +70,14 @@ def cellMin(c1, c2):
 
 def createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, runWithGroupBy):
     solver = Solver()
+
     aggregate_col_names = []
     if(runWithGroupBy):
         aggregate_col_names = ['COUNT', 'SUM', 'MAX', 'MIN']
         aggregate_column = String('aggregate_column')
         solver.add(Or([aggregate_column == StringVal(input_col_name) for input_col_name in input_col_names]))
 
-    # SELECT unknowns // TODO add acols
+    # SELECT unknowns 
     select_col_names = [String(f'select_col_name{i}') for i in range(len(output_col_names))]
 
     # SELECT domain constraints
@@ -214,6 +207,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             solver.add(Implies(And(r_where_bools[r], r_having_bools[r]), cells_equal))
         else:
             solver.add(Implies(r_where_bools[r], cells_equal))
+        # solver.add(Implies(r_where_bools[r], cells_equal))
 
     for s in range(num_output_rows):
         r = Int(f'r{s}')
@@ -244,7 +238,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             col_name = solver.model()[select_col_names[i]]
             query += col_name
             if col_name == StringVal("SUM") or col_name == StringVal("MAX") or col_name == StringVal("MIN") :
-                b= True
+                b = True
                 query += "(" + solver.model()[aggregate_column] + ")"
             if col_name == StringVal("COUNT"):
                 b = True
@@ -262,8 +256,6 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
                 query += str((simplify(cellInt(solver.model()[where_constant]))))
             elif simplify(cellType(solver.model()[where_constant])) == StringVal("real"):
                 query += str((simplify(cellReal(solver.model()[where_constant]))))
-            elif simplify(cellType(solver.model()[where_constant])) == StringVal("bool"):
-                query += str((simplify(cellBool(solver.model()[where_constant]))))
             elif simplify(cellType(solver.model()[where_constant])) == StringVal("string"):
                 query += str((simplify(cellString(solver.model()[where_constant]))))
 
@@ -273,19 +265,17 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             if b and not(gb_col_name == StringVal('unique_rows') or gb_col_name == StringVal('equal_rows')):
                 query += " GROUP BY " + solver.model()[group_by_col_name]
 
-        # HAVING
-        if b and is_false(solver.model()[having_clause_missing]):
-            query += " HAVING "
-            query += solver.model()[having_col_name] + " "
-            query += solver.model()[having_operator] + " "
-            if simplify(cellType(solver.model()[having_constant])) == StringVal("int"):
-                query += str((simplify(cellInt(solver.model()[having_constant]))))
-            elif simplify(cellType(solver.model()[having_constant])) == StringVal("real"):
-                query += str((simplify(cellReal(solver.model()[having_constant]))))
-            elif simplify(cellType(solver.model()[having_constant])) == StringVal("bool"):
-                query += str((simplify(cellBool(solver.model()[having_constant]))))
-            elif simplify(cellType(solver.model()[having_constant])) == StringVal("string"):
-                query += str((simplify(cellString(solver.model()[having_constant]))))
+            # HAVING
+            if b and is_false(solver.model()[having_clause_missing]):
+                query += " HAVING "
+                query += solver.model()[having_col_name] + "(" + solver.model()[aggregate_column] + ") "
+                query += solver.model()[having_operator] + " "
+                if simplify(cellType(solver.model()[having_constant])) == StringVal("int"):
+                    query += str((simplify(cellInt(solver.model()[having_constant]))))
+                elif simplify(cellType(solver.model()[having_constant])) == StringVal("real"):
+                    query += str((simplify(cellReal(solver.model()[having_constant]))))
+                elif simplify(cellType(solver.model()[having_constant])) == StringVal("string"):
+                    query += str((simplify(cellString(solver.model()[having_constant]))))
            
         print(simplify(query))
         return True
@@ -296,11 +286,11 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
     # print(sat)
 def solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows):
     if (createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, False)):
-        # print("without group by ^")
-        print()
+        print("without group by ^")
+        # print()
     elif(createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True)):
-        # print("with group by ^")
-        print()
+        print("with group by ^")
+        # print()
     else:
         print("Unsat \n")
     

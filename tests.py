@@ -31,6 +31,19 @@ input_col_names = ['Name', 'Age', 'Score']
 num_input_rows = 5
 
 if __name__ == "__main__":
+    # OUTPUT TABLE having 1
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 43, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 25, RealVal(0), False, StringVal('')))
+
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Sum_age'), output_age_rows)
+    output_col_names = ['Sum_age']
+    num_output_rows = 2
+
+    print('Test HAVING - group by name/score having sum >= 25')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
     # OUTPUT TABLE MIN
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
