@@ -64,6 +64,7 @@ if __name__ == "__main__":
 
     print('Test sum 1')
     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
     # OUTPUT TABLE sum 2
     name_rows = Array('name_rows', IntSort(), Cell)
@@ -88,6 +89,7 @@ if __name__ == "__main__":
 
     print('Test sum 2')
     solve(input_table_sum_2, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
     # OUTPUT TABLE count 1
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
@@ -100,6 +102,7 @@ if __name__ == "__main__":
 
     print('Test count 1 - count number of rows')
     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
     # OUTPUT TABLE count 2
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
@@ -114,6 +117,7 @@ if __name__ == "__main__":
 
     print('Test count 2 - group 3 together by name')
     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
     # OUTPUT TABLE 1
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
@@ -138,6 +142,7 @@ if __name__ == "__main__":
 
     print('Test 1 - just select the table')
     solve(input_table, input_col_names, num_input_rows, output_table_1, output_col_names, num_output_rows)
+    print('')
 
 
     # OUTPUT TABLE 2
@@ -151,6 +156,7 @@ if __name__ == "__main__":
 
     print('Test 2 - age 20 only')
     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
 
     # OUTPUT TABLE 3
@@ -165,6 +171,7 @@ if __name__ == "__main__":
 
     print('Test 3 - only 20 and 21')
     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
 
     # OUTPUT TABLE 4
@@ -181,6 +188,7 @@ if __name__ == "__main__":
 
     print('Test 4 - not 23')
     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
 
     # OUTPUT TABLE 5
@@ -193,6 +201,7 @@ if __name__ == "__main__":
 
     print('Test 5 - empty output table')
     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
 
     # OUTPUT TABLE 6
@@ -202,6 +211,7 @@ if __name__ == "__main__":
 
     print('Test 6 - should be unsat')
     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
 
     # OUTPUT TABLE 7
@@ -230,6 +240,7 @@ if __name__ == "__main__":
 
     print('Test 7 - select names')
     solve(input_table_names, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
 
     # OUTPUT TABLE 8
@@ -246,6 +257,7 @@ if __name__ == "__main__":
 
     print('Test 8 - exclude Udit')
     solve(input_table_names, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
 
     # OUTPUT TABLE 9
@@ -260,6 +272,22 @@ if __name__ == "__main__":
 
     print('Test 9 - only vids and meds')
     solve(input_table_names, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
+
+
+    # OUTPUT TABLE having 1
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 3, RealVal(0), False, StringVal('')))
+
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Count'), output_age_rows)
+    output_col_names = ['Count']
+    num_output_rows = 1
+
+    print('Test HAVING - group 3 together by name having count >= 3')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
+
 
     # # OUTPUT TABLE 10
     # output_name_rows = Array('output_name_rows', IntSort(), Cell)
