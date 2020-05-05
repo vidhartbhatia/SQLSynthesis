@@ -31,6 +31,32 @@ input_col_names = ['Name', 'Age', 'Score']
 num_input_rows = 5
 
 if __name__ == "__main__":
+     # OUTPUT TABLE sum score
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('real'), 0, RealVal(274.9), StringVal('')))
+
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Sum_score'), output_age_rows)
+    output_col_names = ['Sum_score']
+    num_output_rows = 1
+
+    print('Test sum score')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
+
+    # OUTPUT TABLE avg
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('real'), 0, RealVal(54.98), StringVal('')))
+
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Avg_score'), output_age_rows)
+    output_col_names = ['Avg_score']
+    num_output_rows = 1
+
+    print('Test avg')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
+
     # OUTPUT TABLE having 1
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
     output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 43, RealVal(0), StringVal('')))
