@@ -273,13 +273,13 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
     # print(sat)
 def solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows):
-    if (createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, False, False)):
+    if createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, False, False):
         print("without group by ^")
         # print()
-    elif(createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True, False)):
+    elif createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True, False):
         print("with group by ^")
         # print()
-    elif(createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True, True)):
+    elif createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True, True):
         print("with having ^")
         # print()
     else:
