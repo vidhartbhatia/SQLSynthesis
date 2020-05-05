@@ -147,7 +147,7 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
             # bools.append(b)
             # sump = sump + If(b,cellInt(input_table[aggregate_column][i]),IntVal(0))
             # sump = sump + If(And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),cellInt(input_table[aggregate_column][i]),IntVal(0))
-            sump = sump + If(And(r_bools[r], cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),cellInt(input_table[aggregate_column][i]),IntVal(0))
+            sump = sump + If(And(And(r_bools[r],r_bools[i]), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),cellInt(input_table[aggregate_column][i]),IntVal(0))
         sum_rows = Store(sum_rows, r, cell(StringVal('int'), sump, RealVal(0), False, StringVal('')))
         # solver.add([b == And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])) for i,b in enumerate(bools)])
 
@@ -168,7 +168,7 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
             # bools.append(b)
             # count = count +  If(And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),1,0)
             # count = count + If(b,1,0)
-            count = count + If(And(r_bools[r], cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),1,0)
+            count = count + If(And(And(r_bools[r],r_bools[i]), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),1,0)
         count_rows = Store(count_rows, r, cell(StringVal('int'), count, RealVal(0), False, StringVal('')))
         # solver.add([b == And(satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])) for i,b in enumerate(bools)])
         # solver.add(bsat == satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing))
@@ -208,16 +208,20 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
     # print(sat)
     # print(r_bools)
     if solver.check() == sat:
-        print((solver.model()))
+        # print((solver.model()))
         print("Query generated:")
         # Generate query 
         # the SELECT part
+        b = False
         query = "SELECT "
         for i,output_col, in enumerate(output_col_names):
             col_name = solver.model()[select_col_names[i]]
             query += col_name
-            if col_name == StringVal("SUM") or col_name == StringVal("MAX") or col_name == StringVal("MIN"):
+            if col_name == StringVal("SUM") or col_name == StringVal("MAX") or col_name == StringVal("MIN") :
+                b= True
                 query += "(" + solver.model()[aggregate_column] + ")"
+            if col_name == StringVal("COUNT"):
+                b = True
             query += " AS " + output_col
             if i < len(output_col_names) - 1:
                 query += ", "
@@ -239,9 +243,7 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
 
         # GROUP BY
         gb_col_name = solver.model()[group_by_col_name]
-        if gb_col_name == StringVal('unique_rows'):
-            print()
-        else:
+        if b and not(gb_col_name == StringVal('unique_rows') or gb_col_name == StringVal('equal_rows')):
             query += " GROUP BY " + solver.model()[group_by_col_name]
            
         print(simplify(query))
