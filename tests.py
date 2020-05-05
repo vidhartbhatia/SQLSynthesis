@@ -32,6 +32,23 @@ num_input_rows = 5
 
 if __name__ == "__main__":
 
+    # OUTPUT TABLE max
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
+    # output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
+
+
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Max_age'), output_age_rows)
+    output_col_names = ['Max_age']
+    num_output_rows = 3
+
+    print('Test max 1')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+
+
      # OUTPUT TABLE sum
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
     output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 110, RealVal(0), False, StringVal('')))
