@@ -158,7 +158,6 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
         input_table = Store(input_table, StringVal('COUNT'), count_rows)
         
-
         # MAX
         max_rows = Array('max_rows', IntSort(), Cell)
         for r in range(num_input_rows):
