@@ -93,7 +93,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
         constraints += [select_col_name == StringVal(aggregate_col_name) for aggregate_col_name in aggregate_col_names]
         solver.add(Or(constraints))
 
-     # WHERE unknowns
+    # WHERE unknowns
     where_col_name = String('where_col_name')
     where_operator = String('where_operator')
     where_constant = Const('where_constant', Cell)
@@ -180,7 +180,6 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             # solver.add(bsat == satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing))
         input_table = Store(input_table, StringVal('COUNT'), count_rows)
         
-
         # MAX
         max_rows = Array('max_rows', IntSort(), Cell)
         for r in range(num_input_rows):
