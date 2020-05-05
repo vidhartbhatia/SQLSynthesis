@@ -13,32 +13,22 @@ cellString = Cell.string
 operators = ["=", "!=", "<", ">", "<=", ">="]
 
 def cellEqual(c1, c2):
-    return And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) == cellString(c2))
+    return And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2), cellReal(c1) == cellReal(c2), cellString(c1) == cellString(c2))
 
 def cellNotEqual(c1, c2):
-    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) != cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) != cellReal(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) != cellString(c2)), False))))
+    return Not(cellEqual(c1, c2))
 
 def cellLessThan(c1, c2):
-    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) < cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) < cellReal(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) < cellString(c2)), False))))
-
+    return And(cellType(c1) == cellType(c2), Or(cellInt(c1) < cellInt(c2), cellReal(c1) < cellReal(c2), cellString(c1) < cellString(c2)))
+    
 def cellGreaterThan(c1, c2):
-    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) > cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) > cellReal(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) > cellString(c2)), False))))
+    return And(cellType(c1) == cellType(c2), Or(cellInt(c1) > cellInt(c2), cellReal(c1) > cellReal(c2), cellString(c1) > cellString(c2)))
 
 def cellLTE(c1, c2):
-    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) <= cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) <= cellReal(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) <= cellString(c2)), False))))
+    return And(cellType(c1) == cellType(c2), And(cellInt(c1) <= cellInt(c2), cellReal(c1) <= cellReal(c2), cellString(c1) <= cellString(c2)))
 
 def cellGTE(c1, c2):
-    return If(cellType(c1) == StringVal('int'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) >= cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('real'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) >= cellReal(c2)), cellString(c1) == cellString(c2)), \
-    If(cellType(c1) == StringVal('string'), And(And(And(And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2)), cellReal(c1) == cellReal(c2)), cellString(c1) >= cellString(c2)), False))))
+    return And(cellType(c1) == cellType(c2), And(cellInt(c1) >= cellInt(c2), cellReal(c1) >= cellReal(c2), cellString(c1) >= cellString(c2)))
 
 def satisfies_where_helper(input_table, r, where_col_name, where_operator, where_constant):
     return If(where_operator == StringVal("="), cellEqual(input_table[where_col_name][r], where_constant), \
@@ -58,21 +48,19 @@ def satisfies_where(input_table, r, where_col_name, where_operator, where_consta
 #     If(cellType(c) == StringVal('string'), cellString(c), 0))))
 
 def cellAdd(c1, c2):
-    return If(cellType(c1) == StringVal('int'), cell(StringVal('int'), cellInt(c1) + cellInt(c2) , RealVal(0), False, StringVal('')) , \
-    If(cellType(c1) == StringVal('real'), cell(StringVal('real'), 0 , cellReal(c1) + cellReal(c2), False, StringVal('')) ,  \
-    If(cellType(c1) == StringVal('string'), cell(StringVal('string'), 0 , RealVal(0), False, StringVal('')), cell(cellType(c1), 0, RealVal(0), False, StringVal(''))))))
+    return cell(cellType(c1), cellInt(c1) + cellInt(c2) , cellReal(c1) + cellReal(c2), StringVal(''))
 
 def cellMax(c1, c2):
-    return If(cellGreaterThan(c1,c2), c1, c2)
+    return If(cellGreaterThan(c1, c2), c1, c2)
 
 def cellMin(c1, c2):
-    return If(cellLessThan(c1,c2), c1, c2)
+    return If(cellLessThan(c1, c2), c1, c2)
 
-def createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, runWithGroupBy):
+def createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, runWithGroupBy, runWithHaving):
     solver = Solver()
 
     aggregate_col_names = []
-    if(runWithGroupBy):
+    if runWithGroupBy:
         aggregate_col_names = ['COUNT', 'SUM', 'MAX', 'MIN']
         aggregate_column = String('aggregate_column')
         solver.add(Or([aggregate_column == StringVal(input_col_name) for input_col_name in input_col_names]))
@@ -105,12 +93,12 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
     solver.add(And([r_where_bools[r] == satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing) for r in range(num_input_rows)]))
 
     # add unique and equal cols
-    if(runWithGroupBy):
+    if runWithGroupBy:
         unique_rows = Array('unique_rows', IntSort(), Cell)
         equal_rows = Array('equal_rows', IntSort(), Cell)
         for i in range(num_input_rows):
-            unique_rows = Store(unique_rows, i, cell(StringVal('int'), i, RealVal(0), False, StringVal('')))
-            equal_rows = Store(equal_rows, i, cell(StringVal('int'), 0, RealVal(0), False, StringVal('')))
+            unique_rows = Store(unique_rows, i, cell(StringVal('int'), i, RealVal(0), StringVal('')))
+            equal_rows = Store(equal_rows, i, cell(StringVal('int'), 0, RealVal(0), StringVal('')))
 
         input_table = Store(input_table, StringVal('unique_rows'), unique_rows)
         input_table = Store(input_table, StringVal('equal_rows'), equal_rows)
@@ -128,12 +116,12 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
         # SUM
         sum_rows = Array('sum_rows', IntSort(), Cell)
 
-        default_cell = cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), False, StringVal(''))
+        default_cell = cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), StringVal(''))
         for r in range(num_input_rows):
-            sump = cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), False, StringVal(''))
+            sump = cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), StringVal(''))
             for i in range(num_input_rows):
                 sump = cellAdd(sump, If(And(And(r_where_bools[r], r_where_bools[i]), cellEqual(input_table[group_by_col_name][r], input_table[group_by_col_name][i])), \
-                    input_table[aggregate_column][i], cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), False, StringVal(''))))
+                    input_table[aggregate_column][i], cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), StringVal(''))))
             sum_rows = Store(sum_rows, r, sump)
 
         input_table = Store(input_table, StringVal('SUM'), sum_rows)
@@ -147,7 +135,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             count = IntVal(0)
             for i in range(num_input_rows):
                 count = count + If(And(And(r_where_bools[r],r_where_bools[i]), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),1,0)
-            count_rows = Store(count_rows, r, cell(StringVal('int'), count, RealVal(0), False, StringVal('')))
+            count_rows = Store(count_rows, r, cell(StringVal('int'), count, RealVal(0), StringVal('')))
 
         input_table = Store(input_table, StringVal('COUNT'), count_rows)
         
@@ -174,7 +162,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
         
         input_table = Store(input_table, StringVal('MIN'), min_rows)
 
-
+    if runWithHaving:
         # HAVING unknowns
         having_col_name = String('having_col_name')
         having_operator = String('having_operator')
@@ -203,11 +191,10 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
         s_vars.append(s)
         solver.add(And(s >= 0, s < num_output_rows))
         cells_equal = And([cellEqual(input_table[select_col_names[c]][r], output_table[StringVal(output_col_names[c])][s]) for c in range(len(select_col_names))])
-        if runWithGroupBy:
+        if runWithHaving:
             solver.add(Implies(And(r_where_bools[r], r_having_bools[r]), cells_equal))
         else:
             solver.add(Implies(r_where_bools[r], cells_equal))
-        # solver.add(Implies(r_where_bools[r], cells_equal))
 
     for s in range(num_output_rows):
         r = Int(f'r{s}')
@@ -215,7 +202,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
         solver.add(And(r >= 0, r < num_input_rows))
         cells_equal = And([cellEqual(input_table[select_col_names[c]][r], output_table[StringVal(output_col_names[c])][s]) for c in range(len(select_col_names))])
         solver.add(satisfies_where(input_table, r, where_col_name, where_operator, where_constant, where_clause_missing))
-        if runWithGroupBy:
+        if runWithHaving:
             solver.add(satisfies_where(input_table, r, having_col_name, having_operator, having_constant, having_clause_missing))
         solver.add(cells_equal)
 
@@ -260,12 +247,13 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
                 query += str((simplify(cellString(solver.model()[where_constant]))))
 
         # GROUP BY
-        if(runWithGroupBy):
+        if runWithGroupBy:
             gb_col_name = solver.model()[group_by_col_name]
             if b and not(gb_col_name == StringVal('unique_rows') or gb_col_name == StringVal('equal_rows')):
                 query += " GROUP BY " + solver.model()[group_by_col_name]
 
-            # HAVING
+         # HAVING
+        if runWithHaving:
             if b and is_false(solver.model()[having_clause_missing]):
                 query += " HAVING "
                 query += solver.model()[having_col_name] + "(" + solver.model()[aggregate_column] + ") "
@@ -285,11 +273,14 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
     # print(sat)
 def solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows):
-    if (createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, False)):
+    if (createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, False, False)):
         print("without group by ^")
         # print()
-    elif(createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True)):
+    elif(createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True, False)):
         print("with group by ^")
+        # print()
+    elif(createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True, True)):
+        print("with having ^")
         # print()
     else:
         print("Unsat \n")
