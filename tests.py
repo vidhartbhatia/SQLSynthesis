@@ -2,25 +2,25 @@ from z3 import *
 from synthesis import solve, Cell, cell
 
 name_rows = Array('name_rows', IntSort(), Cell)
-name_rows = Store(name_rows, 0, cell(StringVal('string'), 0, RealVal(0), False, StringVal('a')))
-name_rows = Store(name_rows, 1, cell(StringVal('string'), 0, RealVal(0), False, StringVal('b')))
-name_rows = Store(name_rows, 2, cell(StringVal('string'), 0, RealVal(0), False, StringVal('a')))
-name_rows = Store(name_rows, 3, cell(StringVal('string'), 0, RealVal(0), False, StringVal('d')))
-name_rows = Store(name_rows, 4, cell(StringVal('string'), 0, RealVal(0), False, StringVal('a')))
+name_rows = Store(name_rows, 0, cell(StringVal('string'), 0, RealVal(0), StringVal('a')))
+name_rows = Store(name_rows, 1, cell(StringVal('string'), 0, RealVal(0), StringVal('b')))
+name_rows = Store(name_rows, 2, cell(StringVal('string'), 0, RealVal(0), StringVal('a')))
+name_rows = Store(name_rows, 3, cell(StringVal('string'), 0, RealVal(0), StringVal('d')))
+name_rows = Store(name_rows, 4, cell(StringVal('string'), 0, RealVal(0), StringVal('a')))
 
 age_rows = Array('age_rows', IntSort(), Cell)
-age_rows = Store(age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
-age_rows = Store(age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
-age_rows = Store(age_rows, 2, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
-age_rows = Store(age_rows, 3, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
-age_rows = Store(age_rows, 4, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
+age_rows = Store(age_rows, 0, cell(StringVal('int'), 20, RealVal(0), StringVal('')))
+age_rows = Store(age_rows, 1, cell(StringVal('int'), 21, RealVal(0), StringVal('')))
+age_rows = Store(age_rows, 2, cell(StringVal('int'), 22, RealVal(0), StringVal('')))
+age_rows = Store(age_rows, 3, cell(StringVal('int'), 23, RealVal(0), StringVal('')))
+age_rows = Store(age_rows, 4, cell(StringVal('int'), 24, RealVal(0), StringVal('')))
 
 score_rows = Array('score_rows', IntSort(), Cell)
-score_rows = Store(score_rows, 0, cell(StringVal('real'), 0, RealVal(50.0), False, StringVal('')))
-score_rows = Store(score_rows, 1, cell(StringVal('real'), 0, RealVal(12.5), False, StringVal('')))
-score_rows = Store(score_rows, 2, cell(StringVal('real'), 0, RealVal(12.5), False, StringVal('')))
-score_rows = Store(score_rows, 3, cell(StringVal('real'), 0, RealVal(99.9), False, StringVal('')))
-score_rows = Store(score_rows, 4, cell(StringVal('real'), 0, RealVal(100.0), False, StringVal('')))
+score_rows = Store(score_rows, 0, cell(StringVal('real'), 0, RealVal(50.0), StringVal('')))
+score_rows = Store(score_rows, 1, cell(StringVal('real'), 0, RealVal(12.5), StringVal('')))
+score_rows = Store(score_rows, 2, cell(StringVal('real'), 0, RealVal(12.5), StringVal('')))
+score_rows = Store(score_rows, 3, cell(StringVal('real'), 0, RealVal(99.9), StringVal('')))
+score_rows = Store(score_rows, 4, cell(StringVal('real'), 0, RealVal(100.0), StringVal('')))
 
 input_table = Array('input_table', StringSort(), ArraySort(IntSort(), Cell))
 input_table = Store(input_table, StringVal('Name'), name_rows)
@@ -34,14 +34,14 @@ if __name__ == "__main__":
 
     # OUTPUT TABLE MIN
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 23, RealVal(0), StringVal('')))
+    # output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), StringVal('')))
 
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-    output_table = Store(output_table, StringVal('Max_age'), output_age_rows)
+    output_table = Store(output_table, StringVal('Min_age'), output_age_rows)
     output_col_names = ['Min_age']
     num_output_rows = 3
 
@@ -51,10 +51,10 @@ if __name__ == "__main__":
 
     # OUTPUT TABLE max
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 24, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 23, RealVal(0), StringVal('')))
+    # output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), StringVal('')))
 
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
@@ -68,10 +68,10 @@ if __name__ == "__main__":
 
      # OUTPUT TABLE sum
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 110, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 110, RealVal(0), StringVal('')))
+    # output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), StringVal('')))
+    # output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 22, RealVal(0), StringVal('')))
+    # output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), StringVal('')))
 
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
@@ -85,18 +85,18 @@ if __name__ == "__main__":
 
     # OUTPUT TABLE sum 2
     name_rows = Array('name_rows', IntSort(), Cell)
-    name_rows = Store(name_rows, 0, cell(StringVal('string'), 0, RealVal(0), False, StringVal('a')))
-    name_rows = Store(name_rows, 1, cell(StringVal('string'), 0, RealVal(0), False, StringVal('a')))
-    name_rows = Store(name_rows, 2, cell(StringVal('string'), 0, RealVal(0), False, StringVal('b')))
-    name_rows = Store(name_rows, 3, cell(StringVal('string'), 0, RealVal(0), False, StringVal('b')))
-    name_rows = Store(name_rows, 4, cell(StringVal('string'), 0, RealVal(0), False, StringVal('c')))
+    name_rows = Store(name_rows, 0, cell(StringVal('string'), 0, RealVal(0), StringVal('a')))
+    name_rows = Store(name_rows, 1, cell(StringVal('string'), 0, RealVal(0), StringVal('a')))
+    name_rows = Store(name_rows, 2, cell(StringVal('string'), 0, RealVal(0), StringVal('b')))
+    name_rows = Store(name_rows, 3, cell(StringVal('string'), 0, RealVal(0), StringVal('b')))
+    name_rows = Store(name_rows, 4, cell(StringVal('string'), 0, RealVal(0), StringVal('c')))
     input_table_sum_2 = Store(input_table, StringVal('Name'), name_rows)
 
 
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 41, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 45, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 41, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 45, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 24, RealVal(0), StringVal('')))
 
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     # OUTPUT TABLE count 1
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 5, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 5, RealVal(0), StringVal('')))
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
     output_table = Store(output_table, StringVal('Count'), output_age_rows)
@@ -123,9 +123,9 @@ if __name__ == "__main__":
 
     # OUTPUT TABLE count 2
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 3, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 1, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 1, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 3, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 1, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 1, RealVal(0), StringVal('')))
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
     output_table = Store(output_table, StringVal('Count'), output_age_rows)
@@ -138,18 +138,18 @@ if __name__ == "__main__":
 
     # OUTPUT TABLE 1
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 4, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 22, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 23, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 4, cell(StringVal('int'), 24, RealVal(0), StringVal('')))
 
     output_name_rows = Array('output_name_rows', IntSort(), Cell)
-    output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), False, StringVal('a')))
-    output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), False, StringVal('b')))
-    output_name_rows = Store(output_name_rows, 2, cell(StringVal('string'), 0, RealVal(0), False, StringVal('a')))
-    output_name_rows = Store(output_name_rows, 3, cell(StringVal('string'), 0, RealVal(0), False, StringVal('d')))
-    output_name_rows = Store(output_name_rows, 4, cell(StringVal('string'), 0, RealVal(0), False, StringVal('a')))
+    output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), StringVal('a')))
+    output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), StringVal('b')))
+    output_name_rows = Store(output_name_rows, 2, cell(StringVal('string'), 0, RealVal(0), StringVal('a')))
+    output_name_rows = Store(output_name_rows, 3, cell(StringVal('string'), 0, RealVal(0), StringVal('d')))
+    output_name_rows = Store(output_name_rows, 4, cell(StringVal('string'), 0, RealVal(0), StringVal('a')))
 
     output_table_1 = Array('output_table_1', StringSort(), ArraySort(IntSort(), Cell))
     output_table_1 = Store(output_table_1, StringVal('Age'), output_age_rows)
@@ -164,7 +164,7 @@ if __name__ == "__main__":
 
     # OUTPUT TABLE 2
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), StringVal('')))
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
     output_table = Store(output_table, StringVal('Age'), output_age_rows)
@@ -178,8 +178,8 @@ if __name__ == "__main__":
 
     # OUTPUT TABLE 3
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), StringVal('')))
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
     output_table = Store(output_table, StringVal('AGE'), output_age_rows)
@@ -193,10 +193,10 @@ if __name__ == "__main__":
 
     # OUTPUT TABLE 4
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 22, RealVal(0), False, StringVal('')))
-    output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 24, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 22, RealVal(0), StringVal('')))
+    output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 24, RealVal(0), StringVal('')))
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
     output_table = Store(output_table, StringVal('Age'), output_age_rows)
@@ -234,21 +234,21 @@ if __name__ == "__main__":
     # OUTPUT TABLE 7
 
     name_rows = Array('name_rows', IntSort(), Cell)
-    name_rows = Store(name_rows, 0, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Medha')))
-    name_rows = Store(name_rows, 1, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Vidhart')))
-    name_rows = Store(name_rows, 2, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Udit')))
-    name_rows = Store(name_rows, 3, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Ebru')))
-    name_rows = Store(name_rows, 4, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Jeremy')))
+    name_rows = Store(name_rows, 0, cell(StringVal('string'), 0, RealVal(0), StringVal('Medha')))
+    name_rows = Store(name_rows, 1, cell(StringVal('string'), 0, RealVal(0), StringVal('Vidhart')))
+    name_rows = Store(name_rows, 2, cell(StringVal('string'), 0, RealVal(0), StringVal('Udit')))
+    name_rows = Store(name_rows, 3, cell(StringVal('string'), 0, RealVal(0), StringVal('Ebru')))
+    name_rows = Store(name_rows, 4, cell(StringVal('string'), 0, RealVal(0), StringVal('Jeremy')))
     input_table_names = Store(input_table, StringVal('Name'), name_rows)
 
 
 
     output_name_rows = Array('output_name_rows', IntSort(), Cell)
-    output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Medha')))
-    output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Vidhart')))
-    output_name_rows = Store(output_name_rows, 2, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Jeremy')))
-    output_name_rows = Store(output_name_rows, 3, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Ebru')))
-    output_name_rows = Store(output_name_rows, 4, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Udit')))
+    output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), StringVal('Medha')))
+    output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), StringVal('Vidhart')))
+    output_name_rows = Store(output_name_rows, 2, cell(StringVal('string'), 0, RealVal(0), StringVal('Jeremy')))
+    output_name_rows = Store(output_name_rows, 3, cell(StringVal('string'), 0, RealVal(0), StringVal('Ebru')))
+    output_name_rows = Store(output_name_rows, 4, cell(StringVal('string'), 0, RealVal(0), StringVal('Udit')))
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
     output_table = Store(output_table, StringVal('NAME'), output_name_rows)
@@ -262,10 +262,10 @@ if __name__ == "__main__":
 
     # OUTPUT TABLE 8
     output_name_rows = Array('output_name_rows', IntSort(), Cell)
-    output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Medha')))
-    output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Vidhart')))
-    output_name_rows = Store(output_name_rows, 2, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Jeremy')))
-    output_name_rows = Store(output_name_rows, 3, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Ebru')))
+    output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), StringVal('Medha')))
+    output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), StringVal('Vidhart')))
+    output_name_rows = Store(output_name_rows, 2, cell(StringVal('string'), 0, RealVal(0), StringVal('Jeremy')))
+    output_name_rows = Store(output_name_rows, 3, cell(StringVal('string'), 0, RealVal(0), StringVal('Ebru')))
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
     output_table = Store(output_table, StringVal('NAME'), output_name_rows)
@@ -279,8 +279,8 @@ if __name__ == "__main__":
 
     # OUTPUT TABLE 9
     output_name_rows = Array('output_name_rows', IntSort(), Cell)
-    output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Medha')))
-    output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Vidhart')))
+    output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), StringVal('Medha')))
+    output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), StringVal('Vidhart')))
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
     output_table = Store(output_table, StringVal('Name'), output_name_rows)
@@ -294,7 +294,7 @@ if __name__ == "__main__":
 
     # OUTPUT TABLE having 1
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 3, RealVal(0), False, StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 3, RealVal(0), StringVal('')))
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
     output_table = Store(output_table, StringVal('Count'), output_age_rows)
@@ -308,11 +308,11 @@ if __name__ == "__main__":
 
     # # OUTPUT TABLE 10
     # output_name_rows = Array('output_name_rows', IntSort(), Cell)
-    # output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Medha')))
-    # output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Vidhart')))
+    # output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), StringVal('Medha')))
+    # output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), StringVal('Vidhart')))
     # output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    # output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
+    # output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(0), StringVal('')))
+    # output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), StringVal('')))
 
     # output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
     # output_table = Store(output_table, StringVal('Name'), output_name_rows)
@@ -325,11 +325,11 @@ if __name__ == "__main__":
 
     # # OUTPUT TABLE 11
     # output_name_rows = Array('output_name_rows', IntSort(), Cell)
-    # output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Medha')))
-    # output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), False, StringVal('Vidhart')))
+    # output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), StringVal('Medha')))
+    # output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), StringVal('Vidhart')))
     # output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    # output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 23, RealVal(0), False, StringVal('')))
-    # output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), False, StringVal('')))
+    # output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 23, RealVal(0), StringVal('')))
+    # output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(0), StringVal('')))
 
     # output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
     # output_table = Store(output_table, StringVal('Name'), output_name_rows)
