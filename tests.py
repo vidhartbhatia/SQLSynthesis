@@ -46,11 +46,11 @@ if __name__ == "__main__":
 
     # OUTPUT TABLE avg
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('real'), 0, RealVal(274.9/5), StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('real'), 0, Q(112,5), StringVal('')))
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-    output_table = Store(output_table, StringVal('Avg_score'), output_age_rows)
-    output_col_names = ['Avg_score']
+    output_table = Store(output_table, StringVal('Avg_age'), output_age_rows)
+    output_col_names = ['Avg_age']
     num_output_rows = 1
 
     print('Test avg')

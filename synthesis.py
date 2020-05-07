@@ -148,14 +148,22 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
         avg_rows = Array('avg_rows', IntSort(), Cell)
 
         for r in range(num_input_rows):
-            sum_cell = input_table[StringVal('SUM')][r]
-            sum_type = cellType(sum_cell)
+            # sum_cell = input_table[StringVal('SUM')][r]
+            # sum_type = cellType(sum_cell)
             # avg = If(sum_type == StringVal('int'), cellInt(sum_cell), If(sum_type == StringVal('real'), cellReal(sum_cell), RealVal(0))) / cellInt(input_table[StringVal('COUNT')][r])
             # avg = cellReal(input_table[StringVal('SUM')][r]) / cellReal(input_table[StringVal('COUNT')][r])
-            count_real = cellReal(input_table[StringVal('COUNT')][r])
+            
             # avg = If(count_real == RealVal(0), RealVal(0), If(sum_type == StringVal('int'), cellInt(sum_cell), If(sum_type == StringVal('real'), cellReal(sum_cell), 0)) / count_real)
-            avg = If(count_real == 0, RealVal(0), cellReal(sum_cell) / count_real)
+            
+            # count = cellInt(input_table[StringVal('COUNT')][r])
+            # avg = If(count == 0, RealVal(0), cellInt(sum_cell) / count)
+
+            count_real = cellReal(input_table[StringVal('COUNT')][r])
+            # avg = Real('avg')
+            # solver.add(avg == If(count_real == RealVal(0), RealVal(0), cellReal(input_table[StringVal('SUM')][r]) / count_real))
+            avg = If(count_real == RealVal(0), RealVal(0), cellReal(input_table[StringVal('SUM')][r]) / count_real)
             avg_rows = Store(avg_rows, r, cell(StringVal('real'), 0, avg, StringVal('')))
+            print(solver)
 
         input_table = Store(input_table, StringVal('AVG'), avg_rows)
 
