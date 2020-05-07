@@ -154,7 +154,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             # avg = cellReal(input_table[StringVal('SUM')][r]) / cellReal(input_table[StringVal('COUNT')][r])
             count_real = cellReal(input_table[StringVal('COUNT')][r])
             # avg = If(count_real == RealVal(0), RealVal(0), If(sum_type == StringVal('int'), cellInt(sum_cell), If(sum_type == StringVal('real'), cellReal(sum_cell), 0)) / count_real)
-            avg = If(count_real == RealVal(0), RealVal(0), cellReal(sum_cell) / count_real)
+            avg = If(count_real == 0, RealVal(0), cellReal(sum_cell) / count_real)
             avg_rows = Store(avg_rows, r, cell(StringVal('real'), 0, avg, StringVal('')))
 
         input_table = Store(input_table, StringVal('AVG'), avg_rows)
