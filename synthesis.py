@@ -50,6 +50,10 @@ def satisfies_where(input_table, r, where_col_name, where_operator, where_consta
 def cellAdd(c1, c2):
     return cell(cellType(c1), cellInt(c1) + cellInt(c2) , cellReal(c1) + cellReal(c2), StringVal(''))
 
+def cellDivide(sum_cell, count_cell):
+    count = If()
+    return cell(StringVal('real'), cellInt(c1) + cellInt(c2) , cellReal(c1) + cellReal(c2), StringVal(''))
+
 def cellMax(c1, c2):
     return If(cellGreaterThan(c1, c2), c1, c2)
 
@@ -61,7 +65,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
     aggregate_col_names = []
     if runWithGroupBy:
-        aggregate_col_names = ['COUNT', 'SUM', 'MAX', 'MIN']
+        aggregate_col_names = ['COUNT', 'SUM', 'AVG', 'MAX', 'MIN']
         aggregate_column = String('aggregate_column')
         solver.add(Or([aggregate_column == StringVal(input_col_name) for input_col_name in input_col_names]))
 
@@ -118,10 +122,10 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
         default_cell = cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), StringVal(''))
         for r in range(num_input_rows):
-            sump = cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), StringVal(''))
+            sump = default_cell
             for i in range(num_input_rows):
-                sump = cellAdd(sump, If(And(And(r_where_bools[r], r_where_bools[i]), cellEqual(input_table[group_by_col_name][r], input_table[group_by_col_name][i])), \
-                    input_table[aggregate_column][i], cell(cellType(input_table[aggregate_column][0]), 0, RealVal(0), StringVal(''))))
+                sump = cellAdd(sump, If(And(r_where_bools[r], r_where_bools[i], cellEqual(input_table[group_by_col_name][r], input_table[group_by_col_name][i])), \
+                    input_table[aggregate_column][i], default_cell))
             sum_rows = Store(sum_rows, r, sump)
 
         input_table = Store(input_table, StringVal('SUM'), sum_rows)
@@ -134,13 +138,31 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             # create the cell to put inside
             count = IntVal(0)
             for i in range(num_input_rows):
-                count = count + If(And(And(r_where_bools[r],r_where_bools[i]), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])),1,0)
-            count_rows = Store(count_rows, r, cell(StringVal('int'), count, RealVal(0), StringVal('')))
+                count = count + If(And(And(r_where_bools[r], r_where_bools[i]), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])), 1, 0)
+            count_rows = Store(count_rows, r, cell(StringVal('int'), count, RealVal(count), StringVal('')))
 
         input_table = Store(input_table, StringVal('COUNT'), count_rows)
+
+
+        # AVG
+        avg_rows = Array('avg_rows', IntSort(), Cell)
+
+        for r in range(num_input_rows):
+            sum_cell = input_table[StringVal('SUM')][r]
+            sum_type = cellType(sum_cell)
+            # avg = If(sum_type == StringVal('int'), cellInt(sum_cell), If(sum_type == StringVal('real'), cellReal(sum_cell), RealVal(0))) / cellInt(input_table[StringVal('COUNT')][r])
+            # avg = cellReal(input_table[StringVal('SUM')][r]) / cellReal(input_table[StringVal('COUNT')][r])
+            count_real = cellReal(input_table[StringVal('COUNT')][r])
+            # avg = If(count_real == RealVal(0), RealVal(0), If(sum_type == StringVal('int'), cellInt(sum_cell), If(sum_type == StringVal('real'), cellReal(sum_cell), 0)) / count_real)
+            avg = If(count_real == RealVal(0), RealVal(0), cellReal(sum_cell) / count_real)
+            avg_rows = Store(avg_rows, r, cell(StringVal('real'), 0, avg, StringVal('')))
+
+        input_table = Store(input_table, StringVal('AVG'), avg_rows)
+
         
         # MAX
         max_rows = Array('max_rows', IntSort(), Cell)
+
         for r in range(num_input_rows):
             max_val = input_table[aggregate_column][r]
             for i in range(num_input_rows):
@@ -153,6 +175,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
         # MIN
         min_rows = Array('min_rows', IntSort(), Cell)
+
         for r in range(num_input_rows):
             min_val = input_table[aggregate_column][r]
             for i in range(num_input_rows):
@@ -224,11 +247,9 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
         for i,output_col, in enumerate(output_col_names):
             col_name = solver.model()[select_col_names[i]]
             query += col_name
-            if col_name == StringVal("SUM") or col_name == StringVal("MAX") or col_name == StringVal("MIN") :
+            if col_name == StringVal("COUNT") or col_name == StringVal("SUM") or col_name == StringVal("AVG") or col_name == StringVal("MAX") or col_name == StringVal("MIN") :
                 b = True
                 query += "(" + solver.model()[aggregate_column] + ")"
-            if col_name == StringVal("COUNT"):
-                b = True
             query += " AS " + output_col
             if i < len(output_col_names) - 1:
                 query += ", "
@@ -278,13 +299,10 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
     z3.set_param('sat.threads', 16)
     if createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, False, False):
         print("without group by ^")
-        # print()
     elif createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True, False):
         print("with group by ^")
-        # print()
     elif createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True, True):
         print("with having ^")
-        # print()
     else:
         print("Unsat \n")
     
