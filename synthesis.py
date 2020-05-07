@@ -273,6 +273,9 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
     # print(sat)
 def solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows):
+    set_param('parallel.enable', True)
+    z3.set_param('sat.local_search_threads', 16)
+    z3.set_param('sat.threads', 16)
     if createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, False, False):
         print("without group by ^")
         # print()
