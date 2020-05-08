@@ -49,11 +49,15 @@ def satisfies_where(input_table, r, where_col_name, where_operator, where_consta
 #     If(cellType(c) == StringVal('string'), cellString(c), 0))))
 
 def cellAdd(c1, c2):
-    return cell(cellType(c1), cellInt(c1) + cellInt(c2) , cellReal(c1) + cellReal(c2), StringVal(''))
+    return cell(cellType(c1), cellInt(c1) + cellInt(c2), cellReal(c1) + cellReal(c2), StringVal(''))
 
-def cellDivide(sum_cell, count_cell):
-    count = If()
-    return cell(StringVal('real'), cellInt(c1) + cellInt(c2) , cellReal(c1) + cellReal(c2), StringVal(''))
+def cellIncrement(c1):
+    return cell(StringVal('int'), cellInt(c1) + IntVal(1) , cellReal(c1) + RealVal(1), StringVal(''))
+
+# def cellDivide(sum_cell, count_cell):
+#     count = If()
+
+#     return cell(StringVal('real'), cellInt(c1) + cellInt(c2) , cellReal(c1) + cellReal(c2), StringVal(''))
 
 def cellMax(c1, c2):
     return If(cellGreaterThan(c1, c2), c1, c2)
@@ -66,7 +70,12 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
     aggregate_col_names = []
     if runWithGroupBy:
+<<<<<<< HEAD
         aggregate_col_names = ['COUNT', 'SUM', 'MAX', 'MIN']
+=======
+        aggregate_col_names = ['COUNT', 'SUM', 'AVG', 'MAX', 'MIN']
+        # aggregate_col_names = ['COUNT', 'SUM', 'MAX', 'MIN']
+>>>>>>> avg hack
         aggregate_column = String('aggregate_column')
         solver.add(Or([aggregate_column == StringVal(input_col_name) for input_col_name in input_col_names]))
 
@@ -137,10 +146,14 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
         for r in range(num_input_rows):
             # create the cell to put inside
-            count = IntVal(0)
+            # count = IntVal(0)
+            # for i in range(num_input_rows):
+            #     count = count + If(And(And(r_where_bools[r], r_where_bools[i]), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])), 1, 0)
+            # count_rows = Store(count_rows, r, cell(StringVal('int'), count, RealVal(0), StringVal('')))
+            count = cell(StringVal('int'), 0, RealVal(0), StringVal(''))
             for i in range(num_input_rows):
-                count = count + If(And(And(r_where_bools[r], r_where_bools[i]), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])), 1, 0)
-            count_rows = Store(count_rows, r, cell(StringVal('int'), count, RealVal(count), StringVal('')))
+                count = If(And(And(r_where_bools[r], r_where_bools[i]), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])), cellIncrement(count), count)
+            count_rows = Store(count_rows, r, count)
 
         input_table = Store(input_table, StringVal('COUNT'), count_rows)
 
@@ -159,11 +172,15 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             # count = cellInt(input_table[StringVal('COUNT')][r])
             # avg = If(count == 0, RealVal(0), cellInt(sum_cell) / count)
 
-            count_real = cellReal(input_table[StringVal('COUNT')][r])
-            # avg = Real('avg')
-            # solver.add(avg == If(count_real == RealVal(0), RealVal(0), cellReal(input_table[StringVal('SUM')][r]) / count_real))
-            avg = If(count_real == RealVal(0), RealVal(0), cellReal(input_table[StringVal('SUM')][r]) / count_real)
-            avg_rows = Store(avg_rows, r, cell(StringVal('real'), 0, avg, StringVal('')))
+            # count_real = cellReal(input_table[StringVal('COUNT')][r])
+            # count_real = cellReal(count_rows[r])
+            # avg = If(count_real == RealVal(0), RealVal(0), cellReal(sum_rows[r]) / count_real)
+            # count_real = cellReal(count_rows[r])
+            # solver.add(Not(count_real == RealVal(0)))
+            avg_rows = Store(avg_rows, r, cell(StringVal('real'), 0, cellReal(sum_rows[r]) / RealVal(5), StringVal('')))
+        
+        # print(solver)
+
 
         input_table = Store(input_table, StringVal('AVG'), avg_rows)
 
