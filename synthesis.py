@@ -1,5 +1,6 @@
 from z3 import *
 from itertools import *
+import time
 
 Cell = Datatype('Cell')
 Cell.declare('cell', ('type', StringSort()), ('int', IntSort()), ('real', RealSort()), ('string', StringSort()))
@@ -65,7 +66,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
     aggregate_col_names = []
     if runWithGroupBy:
-        aggregate_col_names = ['COUNT', 'SUM', 'AVG', 'MAX', 'MIN']
+        aggregate_col_names = ['COUNT', 'SUM', 'MAX', 'MIN']
         aggregate_column = String('aggregate_column')
         solver.add(Or([aggregate_column == StringVal(input_col_name) for input_col_name in input_col_names]))
 
@@ -163,9 +164,9 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             # solver.add(avg == If(count_real == RealVal(0), RealVal(0), cellReal(input_table[StringVal('SUM')][r]) / count_real))
             avg = If(count_real == RealVal(0), RealVal(0), cellReal(input_table[StringVal('SUM')][r]) / count_real)
             avg_rows = Store(avg_rows, r, cell(StringVal('real'), 0, avg, StringVal('')))
-            print(solver)
 
         input_table = Store(input_table, StringVal('AVG'), avg_rows)
+
 
         
         # MAX
@@ -246,7 +247,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             solver.add(r_vars[i] != r_vars[j])
     
     if solver.check() == sat:
-        # print((solver.model()))
+        # print((solver.model().eval(simplify(input_table[StringVal("AVG")]))))
         print("Query generated:")
         # Generate query 
         # the SELECT part
@@ -305,12 +306,13 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
     set_param('parallel.enable', True)
     z3.set_param('sat.local_search_threads', 16)
     z3.set_param('sat.threads', 16)
+    t1 = time.time()
     if createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, False, False):
-        print("without group by ^")
+        print("without group by, in time %0.2f " % (time.time() - t1))
     elif createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True, False):
-        print("with group by ^")
+        print("with group by, in time %0.2f" % (time.time() - t1))
     elif createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True, True):
-        print("with having ^")
+        print("with having in time %0.2f " % (time.time() - t1))
     else:
         print("Unsat \n")
     
