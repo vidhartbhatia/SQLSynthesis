@@ -70,7 +70,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
     aggregate_col_names = []
     if runWithGroupBy:
-        aggregate_col_names = [ 'MAX', 'MIN', 'SUM', 'COUNT' ]
+        aggregate_col_names = [ 'MAX', 'MIN', 'SUM', 'COUNT', 'AVG' ]
         # aggregate_col_names = ['COUNT', 'SUM', 'MAX', 'MIN']
         aggregate_column = String('aggregate_column')
         solver.add(Or([aggregate_column == StringVal(input_col_name) for input_col_name in input_col_names]))
@@ -258,7 +258,6 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
         for i in range(num_input_rows):
             for j in range(num_input_rows):
                 if (i!=j):
-                    # solver.add(Implies(s_vars[i] == s_vars[j], cellEqual(input_table[group_by_col_name][i],input_table[group_by_col_name][j])))
                     solver.add(Implies(And(r_where_bools[i] , r_where_bools[j], cellNotEqual(input_table[group_by_col_name][i],input_table[group_by_col_name][j])), s_vars[i] != s_vars[j]))
     else:
         for i in range(num_input_rows):
@@ -275,7 +274,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
         # print((solver.model().eval(simplify(input_table[StringVal("AVG")]))))
         print("Query generated:")
         # print(solver)
-        # print(solver.model())
+        print(solver.model())
         # Generate query 
         # the SELECT part
         b = False

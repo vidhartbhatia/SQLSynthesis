@@ -44,24 +44,29 @@ if __name__ == "__main__":
 #     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
 #     print('')
 
-    #      # OUTPUT TABLE sum score
-    output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 21, RealVal(21), StringVal('')))
-    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 22, RealVal(22), StringVal('')))
+#     #      # OUTPUT TABLE sum score
+#     output_age_rows = Array('output_age_rows', IntSort(), Cell)
+#     output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 21, RealVal(21), StringVal('')))
+#     output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 22, RealVal(22), StringVal('')))
 
-    output_score_rows = Array('output_score_rows', IntSort(), Cell)
-    output_score_rows = Store(output_score_rows, 0, cell(StringVal('real'), 0, RealVal(100), StringVal('')))
-    output_score_rows = Store(output_score_rows, 1, cell(StringVal('real'), 0, RealVal(50.0), StringVal('')))
+#     output_score_rows = Array('output_score_rows', IntSort(), Cell)
+#     output_score_rows = Store(output_score_rows, 0, cell(StringVal('real'), 0, RealVal(100), StringVal('')))
+#     output_score_rows = Store(output_score_rows, 1, cell(StringVal('real'), 0, RealVal(50.0), StringVal('')))
 
-    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-    output_table = Store(output_table, StringVal('Age'), output_age_rows)
-    output_table = Store(output_table, StringVal('Max Score'), output_score_rows)
-    output_col_names = ['Age', 'Max Score']
-    num_output_rows = 2
+#     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+#     output_table = Store(output_table, StringVal('Age'), output_age_rows)
+#     output_table = Store(output_table, StringVal('Max Score'), output_score_rows)
+#     output_col_names = ['Age', 'Max Score']
+#     num_output_rows = 2
 
-    print('Test having 1')
-    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
-    print('')
+#     print('Test having 1')
+#     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+#     print('')
+
+#     Test having 1
+# Query generated:
+# "SELECT Age AS Age, MAX(Score) AS Max Score FROM input_table GROUP BY Age HAVING MAX(Score) != 99/10"
+# with having in time 83.11 
 
     #  # OUTPUT TABLE sum score
     # output_age_rows = Array('output_age_rows', IntSort(), Cell)
@@ -334,4 +339,8 @@ if __name__ == "__main__":
     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
     print('')
   
+# Test count - score >= 50 - YOU SHALL PASS
+# Query generated:
+# "SELECT COUNT(Score) AS number, MIN(Score) AS score FROM input_table WHERE Score >= 50 GROUP BY Age"
+# with group by, in time 530.41
 
