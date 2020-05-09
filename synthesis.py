@@ -70,7 +70,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
     aggregate_col_names = []
     if runWithGroupBy:
-        aggregate_col_names = ['COUNT', 'SUM', 'AVG', 'MAX', 'MIN']
+        aggregate_col_names = [ 'MAX', 'MIN', 'SUM', 'COUNT' ]
         # aggregate_col_names = ['COUNT', 'SUM', 'MAX', 'MIN']
         aggregate_column = String('aggregate_column')
         solver.add(Or([aggregate_column == StringVal(input_col_name) for input_col_name in input_col_names]))
@@ -180,7 +180,6 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
         input_table = Store(input_table, StringVal('AVG'), avg_rows)
 
-
         
         # MAX
         max_rows = Array('max_rows', IntSort(), Cell)
@@ -251,18 +250,32 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             solver.add(satisfies_where(input_table, r, having_col_name, having_operator, having_constant, having_clause_missing))
         solver.add(cells_equal)
 
-    # for i in range(num_input_rows-1):s
-    #     for j in range(i+1, num_input_rows):s
-    #         solver.add(Int(f'r{i}') != Int(f'r{j}'))
+    if runWithGroupBy and runWithHaving:
+        for i in range(num_input_rows-1):
+            for j in range(i+1, num_input_rows):
+                    solver.add(Implies(And(r_where_bools[i] , r_where_bools[j], r_having_bools[i], r_having_bools[j], cellNotEqual(input_table[group_by_col_name][i],input_table[group_by_col_name][j])), s_vars[i] != s_vars[j]))
+    elif runWithGroupBy:
+        for i in range(num_input_rows):
+            for j in range(num_input_rows):
+                if (i!=j):
+                    # solver.add(Implies(s_vars[i] == s_vars[j], cellEqual(input_table[group_by_col_name][i],input_table[group_by_col_name][j])))
+                    solver.add(Implies(And(r_where_bools[i] , r_where_bools[j], cellNotEqual(input_table[group_by_col_name][i],input_table[group_by_col_name][j])), s_vars[i] != s_vars[j]))
+    else:
+        for i in range(num_input_rows):
+            for j in range(num_input_rows):
+                if (i!=j):
+                    solver.add(Implies(And(r_where_bools[i], r_where_bools[j]), s_vars[i] != s_vars[j]))
 
-    for i in range(num_output_rows-1):
-        for j in range(i+1, num_output_rows):
-            solver.add(r_vars[i] != r_vars[j])
+    for i in range(num_output_rows):
+        for j in range(num_output_rows):
+            if (i!=j):
+                solver.add(r_vars[i] != r_vars[j])
     
     if solver.check() == sat:
         # print((solver.model().eval(simplify(input_table[StringVal("AVG")]))))
         print("Query generated:")
-        print(solver.model())
+        # print(solver)
+        # print(solver.model())
         # Generate query 
         # the SELECT part
         b = False

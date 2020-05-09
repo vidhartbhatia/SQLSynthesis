@@ -31,18 +31,18 @@ input_col_names = ['Name', 'Age', 'Score']
 num_input_rows = 5
 
 if __name__ == "__main__":
-    #     # OUTPUT TABLE avg score
-    # output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    # output_age_rows = Store(output_age_rows, 0, cell(StringVal('real'), 0, RealVal(100.0), StringVal('')))
+#         # OUTPUT TABLE avg score
+#     output_age_rows = Array('output_age_rows', IntSort(), Cell)
+#     output_age_rows = Store(output_age_rows, 0, cell(StringVal('real'), 0, RealVal(100.0), StringVal('')))
 
-    # output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-    # output_table = Store(output_table, StringVal('Max Score'), output_age_rows)
-    # output_col_names = ['Max Score']
-    # num_output_rows = 1
+#     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+#     output_table = Store(output_table, StringVal('Max Score'), output_age_rows)
+#     output_col_names = ['Max Score']
+#     num_output_rows = 1
 
-    # print('Test avg score')
-    # solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
-    # print('')
+#     print('Test avg score')
+#     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+#     print('')
 
     #      # OUTPUT TABLE sum score
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
@@ -216,14 +216,32 @@ if __name__ == "__main__":
     input_table = Store(input_table, StringVal('Score'), score_rows)
    
    
-
-    # OUTPUT TABLE 1
+	# output basic select all
     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 20, RealVal(20), StringVal('')))
-    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 21, RealVal(21), StringVal('')))
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 22, RealVal(22), StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 22, RealVal(22), StringVal('')))
     output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 22, RealVal(22), StringVal('')))
-    output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 25, RealVal(25), StringVal('')))
-    output_age_rows = Store(output_age_rows, 4, cell(StringVal('int'), 24, RealVal(24), StringVal('')))
+    output_age_rows = Store(output_age_rows, 3, cell(StringVal('int'), 19, RealVal(19), StringVal('')))
+    output_age_rows = Store(output_age_rows, 4, cell(StringVal('int'), 21, RealVal(21), StringVal('')))
+
+    output_name_rows = Array('output_name_rows', IntSort(), Cell)
+    output_name_rows = Store(output_name_rows, 0, cell(StringVal('string'), 0, RealVal(0), StringVal('Medha')))
+    output_name_rows = Store(output_name_rows, 1, cell(StringVal('string'), 0, RealVal(0), StringVal('Vidhart')))
+    output_name_rows = Store(output_name_rows, 2, cell(StringVal('string'), 0, RealVal(0), StringVal('Udit')))
+    output_name_rows = Store(output_name_rows, 3, cell(StringVal('string'), 0, RealVal(0), StringVal('Ebru')))
+    output_name_rows = Store(output_name_rows, 4, cell(StringVal('string'), 0, RealVal(0), StringVal('Jeremy')))
+
+
+
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('AGE'), output_age_rows)
+    output_table = Store(output_table, StringVal('NAME'), output_name_rows)
+    output_col_names = ['NAME', 'AGE']
+    num_output_rows = 5
+
+    print('Test 8 - selct name and ages')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
     # OUTPUT TABLE 8
     output_name_rows = Array('output_name_rows', IntSort(), Cell)
@@ -295,9 +313,9 @@ if __name__ == "__main__":
 
     # OUTPUT TABLE 10
 
-    output_name_rows = Array('output_name_rows', IntSort(), Cell)
-    output_name_rows = Store(output_name_rows, 0, cell(StringVal('int'), 2, RealVal(2), StringVal('')))
-    output_name_rows = Store(output_name_rows, 1, cell(StringVal('int'), 1, RealVal(1), StringVal('')))
+    output_count_rows = Array('output_count_rows', IntSort(), Cell)
+    output_count_rows = Store(output_count_rows, 0, cell(StringVal('int'), 2, RealVal(2), StringVal('')))
+    output_count_rows = Store(output_count_rows, 1, cell(StringVal('int'), 1, RealVal(1), StringVal('')))
 
     output_score_rows = Array('output_score_rows', IntSort(), Cell)
     output_score_rows = Store(output_score_rows, 0, cell(StringVal('real'), 0, RealVal(50), StringVal('')))
@@ -306,12 +324,11 @@ if __name__ == "__main__":
 
     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
     output_table = Store(output_table, StringVal('score'), output_score_rows)
-    output_table = Store(output_table, StringVal('number'), output_name_rows)
-
+    output_table = Store(output_table, StringVal('number'), output_count_rows)
 
 
     output_col_names = ['number', 'score']
-    num_output_rows = 3
+    num_output_rows = 2
 
     print('Test count - score >= 50 - YOU SHALL PASS')
     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
