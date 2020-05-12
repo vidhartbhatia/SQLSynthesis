@@ -9,18 +9,18 @@ name_rows = Store(name_rows, 3, cell(StringVal('string'), 0, RealVal(0), StringV
 name_rows = Store(name_rows, 4, cell(StringVal('string'), 0, RealVal(0), StringVal('Medha')))
 
 age_rows = Array('age_rows', IntSort(), Cell)
-age_rows = Store(age_rows, 0, cell(StringVal('int'), 22, RealVal(22), StringVal('')))
-age_rows = Store(age_rows, 1, cell(StringVal('int'), 22, RealVal(22), StringVal('')))
-age_rows = Store(age_rows, 2, cell(StringVal('int'), 19, RealVal(19), StringVal('')))
+age_rows = Store(age_rows, 0, cell(StringVal('int'), 19, RealVal(19), StringVal('')))
+age_rows = Store(age_rows, 1, cell(StringVal('int'), 20, RealVal(20), StringVal('')))
+age_rows = Store(age_rows, 2, cell(StringVal('int'), 21, RealVal(21), StringVal('')))
 age_rows = Store(age_rows, 3, cell(StringVal('int'), 21, RealVal(21), StringVal('')))
 age_rows = Store(age_rows, 4, cell(StringVal('int'), 22, RealVal(22), StringVal('')))
 
 score_rows = Array('score_rows', IntSort(), Cell)
-score_rows = Store(score_rows, 0, cell(StringVal('real'), 0, RealVal(12.5), StringVal('')))
+score_rows = Store(score_rows, 0, cell(StringVal('real'), 0, RealVal(75.0), StringVal('')))
 score_rows = Store(score_rows, 1, cell(StringVal('real'), 0, RealVal(50.0), StringVal('')))
 score_rows = Store(score_rows, 2, cell(StringVal('real'), 0, RealVal(9.9), StringVal('')))
 score_rows = Store(score_rows, 3, cell(StringVal('real'), 0, RealVal(100.0), StringVal('')))
-score_rows = Store(score_rows, 4, cell(StringVal('real'), 0, RealVal(50.0), StringVal('')))
+score_rows = Store(score_rows, 4, cell(StringVal('real'), 0, RealVal(12.5), StringVal('')))
 
 input_table = Array('input_table', StringSort(), ArraySort(IntSort(), Cell))
 input_table = Store(input_table, StringVal('Name'), name_rows)

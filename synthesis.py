@@ -2,6 +2,7 @@ from z3 import *
 from itertools import *
 import time
 
+# Datatype to represent table cells
 Cell = Datatype('Cell')
 Cell.declare('cell', ('type', StringSort()), ('int', IntSort()), ('real', RealSort()), ('string', StringSort()))
 Cell = Cell.create()
@@ -11,6 +12,7 @@ cellInt = Cell.int
 cellReal = Cell.real
 cellString = Cell.string
 
+# Operators supported in WHERE and HAVING cl
 operators = ["=", "!=", "<", ">", "<=", ">="]
 
 # cell dataype helper functions
@@ -160,7 +162,7 @@ def generateSQL(input_table, input_col_names, num_input_rows, output_table, outp
             # count_real = cellReal(count_rows[r])
             # solver.add(Not(count_real == RealVal(0)))
             
-            #TODO fix hardcoded 5
+            # TODO fix hardcoded 5
             avg_rows = Store(avg_rows, r, cell(StringVal('real'), 0, cellReal(sum_rows[r]) / RealVal(5), StringVal('')))
         
         input_table = Store(input_table, StringVal('AVG'), avg_rows)
