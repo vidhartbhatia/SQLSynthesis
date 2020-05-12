@@ -13,6 +13,7 @@ cellString = Cell.string
 
 operators = ["=", "!=", "<", ">", "<=", ">="]
 
+# cell dataype helper functions
 def cellEqual(c1, c2):
     return And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2), cellReal(c1) == cellReal(c2), cellString(c1) == cellString(c2))
 
@@ -42,22 +43,11 @@ def satisfies_where_helper(input_table, r, where_col_name, where_operator, where
 def satisfies_where(input_table, r, where_col_name, where_operator, where_constant, where_clause_missing):
     return If(where_clause_missing, True, satisfies_where_helper(input_table, r, where_col_name, where_operator, where_constant))
 
-# def cell_value(c):
-#     return If(cellType(c) == StringVal('int'), cellInt(c), \
-#     If(cellType(c) == StringVal('real'), cellReal(c) , \
-#     If(cellType(c) == StringVal('bool'), cellBool(c), \
-#     If(cellType(c) == StringVal('string'), cellString(c), 0))))
-
 def cellAdd(c1, c2):
     return cell(cellType(c1), cellInt(c1) + cellInt(c2), cellReal(c1) + cellReal(c2), StringVal(''))
 
 def cellIncrement(c1):
     return cell(StringVal('int'), cellInt(c1) + IntVal(1) , cellReal(c1) + RealVal(1), StringVal(''))
-
-# def cellDivide(sum_cell, count_cell):
-#     count = If()
-
-#     return cell(StringVal('real'), cellInt(c1) + cellInt(c2) , cellReal(c1) + cellReal(c2), StringVal(''))
 
 def cellMax(c1, c2):
     return If(cellGreaterThan(c1, c2), c1, c2)
@@ -65,13 +55,14 @@ def cellMax(c1, c2):
 def cellMin(c1, c2):
     return If(cellLessThan(c1, c2), c1, c2)
 
-def createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, runWithGroupBy, runWithHaving):
-    solver = Solver()
+# based on having and group by paramters generate contraints, check SAT and output query if found, else reurn false
+def generateSQL(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, runWithGroupBy, runWithHaving):
 
+    solver = Solver()
     aggregate_col_names = []
     if runWithGroupBy:
+        # aggregate columns
         aggregate_col_names = [ 'MAX', 'MIN', 'SUM', 'COUNT', 'AVG' ]
-        # aggregate_col_names = ['COUNT', 'SUM', 'MAX', 'MIN']
         aggregate_column = String('aggregate_column')
         solver.add(Or([aggregate_column == StringVal(input_col_name) for input_col_name in input_col_names]))
 
@@ -98,12 +89,12 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
         constraint = Or(constraint, cellEqual(where_constant, input_table[where_col_name][r]))
     solver.add(constraint)
 
-    # booleans representing if row satisfies where
+    # booleans representing if row r satisfies where predicate
     r_where_bools = [Bool(f'r{i}_satisfies_where') for i in range(num_input_rows)]
     solver.add(And([r_where_bools[r] == satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing) for r in range(num_input_rows)]))
 
-    # add unique and equal cols
     if runWithGroupBy:
+        # add unique and equal cols
         unique_rows = Array('unique_rows', IntSort(), Cell)
         equal_rows = Array('equal_rows', IntSort(), Cell)
         for i in range(num_input_rows):
@@ -116,13 +107,14 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
         # GROUP BY unknown(s)
         group_by_col_name = String('group_by_col_name')
+
         # GROUP BY domain constraints
-        # solver.add(Or([group_by_col_name == StringVal(input_col_name) for input_col_name in input_col_names]))
         g_constraints = [group_by_col_name == StringVal(input_col_name) for input_col_name in input_col_names]
         g_constraints += [group_by_col_name == StringVal(c) for c in group_by_column_names]
         solver.add(Or(g_constraints))
 
-        # compute aggregate columns
+        # Generate aggregate columns as constraints
+
         # SUM
         sum_rows = Array('sum_rows', IntSort(), Cell)
 
@@ -136,16 +128,10 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
 
         input_table = Store(input_table, StringVal('SUM'), sum_rows)
 
-
         # COUNT
         count_rows = Array('count_rows', IntSort(), Cell)
 
         for r in range(num_input_rows):
-            # create the cell to put inside
-            # count = IntVal(0)
-            # for i in range(num_input_rows):
-            #     count = count + If(And(And(r_where_bools[r], r_where_bools[i]), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])), 1, 0)
-            # count_rows = Store(count_rows, r, cell(StringVal('int'), count, RealVal(0), StringVal('')))
             count = cell(StringVal('int'), 0, RealVal(0), StringVal(''))
             for i in range(num_input_rows):
                 count = If(And(And(r_where_bools[r], r_where_bools[i]), cellEqual(input_table[group_by_col_name][r],input_table[group_by_col_name][i])), cellIncrement(count), count)
@@ -177,9 +163,6 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             #TODO fix hardcoded 5
             avg_rows = Store(avg_rows, r, cell(StringVal('real'), 0, cellReal(sum_rows[r]) / RealVal(5), StringVal('')))
         
-        # print(solver)
-
-
         input_table = Store(input_table, StringVal('AVG'), avg_rows)
 
         
@@ -224,7 +207,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             constraint = Or(constraint, cellEqual(having_constant, input_table[having_col_name][r]))
         solver.add(constraint)
 
-        # booleans representing if row satisfies HAVING
+        # booleans representing if row r satisfies HAVING predicate
         r_having_bools = [Bool(f'r{i}_satisfies_having') for i in range(num_input_rows)]
         solver.add(And([r_having_bools[r] == satisfies_where(input_table, r, having_col_name, having_operator, having_constant, having_clause_missing) for r in range(num_input_rows)]))
 
@@ -335,11 +318,11 @@ def solve(input_table, input_col_names, num_input_rows, output_table, output_col
     z3.set_param('sat.local_search_threads', 16)
     z3.set_param('sat.threads', 16)
     t1 = time.time()
-    if createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, False, False):
+    if generateSQL(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, False, False):
         print("without group by, in time %0.2f " % (time.time() - t1))
-    elif createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True, False):
+    elif generateSQL(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True, False):
         print("with group by, in time %0.2f" % (time.time() - t1))
-    elif createSolver(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True, True):
+    elif generateSQL(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, True, True):
         print("with having in time %0.2f " % (time.time() - t1))
     else:
         print("Unsat \n")
