@@ -325,7 +325,7 @@ Testing and Results
 | Medha | 50.0 |
 
 
-&quot;SELECT Name AS Passing, Score AS score FROM input\_table WHERE Score \&gt;= 50&quot;
+&quot;SELECT Name AS Passing, Score AS score FROM input\_table WHERE Score >= 50&quot;
 
 ~ \&lt; 0.5 seconds
 
@@ -398,7 +398,7 @@ As we can see, the query generated was not wrong, but made us of a MIN that wasn
 
 ~ 90 seconds
 
-Alternate Query generated: &quot;SELECT Age AS Age, MAX(Score) AS Max Score FROM input\_table WHERE Score \&gt;= 25/2 GROUP BY Age&quot;
+Alternate Query generated: &quot;SELECT Age AS Age, MAX(Score) AS Max Score FROM input\_table WHERE Score >= 25/2 GROUP BY Age&quot;
 
 ---
 
@@ -418,11 +418,11 @@ Alternate Query generated: &quot;SELECT Age AS Age, MAX(Score) AS Max Score FROM
 | 21 | 109.9 |
 
 
-&quot;SELECT Age AS Age, SUM(Score) AS Sum of Scores FROM input\_table GROUP BY Age HAVING SUM(Score) \&gt;= 75&quot;
+&quot;SELECT Age AS Age, SUM(Score) AS Sum of Scores FROM input\_table GROUP BY Age HAVING SUM(Score) >= 75&quot;
 
 ~ 2 mins
 
-Alternate query generated: &quot;SELECT Age AS Age, SUM(Score) AS Sum of Scores FROM input\_table WHERE Name \&gt;= &quot;Ebru&quot; GROUP BY Age HAVING SUM(Score) \&gt;= 75&quot;
+Alternate query generated: &quot;SELECT Age AS Age, SUM(Score) AS Sum of Scores FROM input\_table WHERE Name >= &quot;Ebru&quot; GROUP BY Age HAVING SUM(Score) >= 75&quot;
 This query is not wrong, but includes an unnecessary where clause.
 
 This is just a subset of the tests we ran, but overall, our
