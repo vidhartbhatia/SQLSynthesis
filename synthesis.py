@@ -198,9 +198,10 @@ def generateSQL(input_table, input_col_names, num_input_rows, output_table, outp
         r_having_bools = [Bool(f'r{i}_satisfies_having') for i in range(num_input_rows)]
         solver.add(And([r_having_bools[r] == satisfies_where(input_table, r, having_col_name, having_operator, having_constant, having_clause_missing) for r in range(num_input_rows)]))
 
-    # Row constraints
+    # Row IO constraints
     s_vars = []
     r_vars = []
+    # I -> O
     for r in range(num_input_rows):
         s = Int(f's{r}')
         s_vars.append(s)
@@ -210,7 +211,7 @@ def generateSQL(input_table, input_col_names, num_input_rows, output_table, outp
             solver.add(Implies(And(r_where_bools[r], r_having_bools[r]), cells_equal))
         else:
             solver.add(Implies(r_where_bools[r], cells_equal))
-
+    # O -> I
     for s in range(num_output_rows):
         r = Int(f'r{s}')
         r_vars.append(r)
@@ -221,6 +222,7 @@ def generateSQL(input_table, input_col_names, num_input_rows, output_table, outp
             solver.add(satisfies_where(input_table, r, having_col_name, having_operator, having_constant, having_clause_missing))
         solver.add(cells_equal)
 
+    # Uniqueness constraints
     if runWithGroupBy and runWithHaving:
         for i in range(num_input_rows-1):
             for j in range(i+1, num_input_rows):
@@ -243,6 +245,7 @@ def generateSQL(input_table, input_col_names, num_input_rows, output_table, outp
     
     if solver.check() == sat:
         print("Query generated:")
+        
         # Generate query 
         # the SELECT part
         b = False
