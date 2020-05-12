@@ -173,6 +173,8 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             # avg = If(count_real == RealVal(0), RealVal(0), cellReal(sum_rows[r]) / count_real)
             # count_real = cellReal(count_rows[r])
             # solver.add(Not(count_real == RealVal(0)))
+            
+            #TODO fix hardcoded 5
             avg_rows = Store(avg_rows, r, cell(StringVal('real'), 0, cellReal(sum_rows[r]) / RealVal(5), StringVal('')))
         
         # print(solver)
@@ -255,13 +257,13 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
             for j in range(i+1, num_input_rows):
                     solver.add(Implies(And(r_where_bools[i] , r_where_bools[j], r_having_bools[i], r_having_bools[j], cellNotEqual(input_table[group_by_col_name][i],input_table[group_by_col_name][j])), s_vars[i] != s_vars[j]))
     elif runWithGroupBy:
-        for i in range(num_input_rows):
-            for j in range(num_input_rows):
+        for i in range(num_input_rows-1):
+            for j in range(i+1, num_input_rows):
                 if (i!=j):
                     solver.add(Implies(And(r_where_bools[i] , r_where_bools[j], cellNotEqual(input_table[group_by_col_name][i],input_table[group_by_col_name][j])), s_vars[i] != s_vars[j]))
     else:
-        for i in range(num_input_rows):
-            for j in range(num_input_rows):
+        for i in range(num_input_rows-1):
+            for j in range(i+1, num_input_rows):
                 if (i!=j):
                     solver.add(Implies(And(r_where_bools[i], r_where_bools[j]), s_vars[i] != s_vars[j]))
 
@@ -274,7 +276,7 @@ def createSolver(input_table, input_col_names, num_input_rows, output_table, out
         # print((solver.model().eval(simplify(input_table[StringVal("AVG")]))))
         print("Query generated:")
         # print(solver)
-        print(solver.model())
+        # print(solver.model())
         # Generate query 
         # the SELECT part
         b = False

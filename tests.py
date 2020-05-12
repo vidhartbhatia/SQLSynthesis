@@ -31,102 +31,110 @@ input_col_names = ['Name', 'Age', 'Score']
 num_input_rows = 5
 
 if __name__ == "__main__":
-#         # OUTPUT TABLE avg score
-#     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-#     output_age_rows = Store(output_age_rows, 0, cell(StringVal('real'), 0, RealVal(100.0), StringVal('')))
+     # OUTPUT TABLE avg score
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 22, RealVal(22), StringVal('')))
 
-#     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-#     output_table = Store(output_table, StringVal('Max Score'), output_age_rows)
-#     output_col_names = ['Max Score']
-#     num_output_rows = 1
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Max age'), output_age_rows)
+    output_col_names = ['Max age']
+    num_output_rows = 1
 
-#     print('Test avg score')
-#     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
-#     print('')
+    print('Test max age')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
-#     #      # OUTPUT TABLE sum score
-#     output_age_rows = Array('output_age_rows', IntSort(), Cell)
-#     output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 21, RealVal(21), StringVal('')))
-#     output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 22, RealVal(22), StringVal('')))
+    # # OUTPUT TABLE having 1
+    # output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    # output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 21, RealVal(21), StringVal('')))
+    # output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 22, RealVal(22), StringVal('')))
 
-#     output_score_rows = Array('output_score_rows', IntSort(), Cell)
-#     output_score_rows = Store(output_score_rows, 0, cell(StringVal('real'), 0, RealVal(100), StringVal('')))
-#     output_score_rows = Store(output_score_rows, 1, cell(StringVal('real'), 0, RealVal(50.0), StringVal('')))
+    # output_score_rows = Array('output_score_rows', IntSort(), Cell)
+    # output_score_rows = Store(output_score_rows, 0, cell(StringVal('real'), 0, RealVal(100), StringVal('')))
+    # output_score_rows = Store(output_score_rows, 1, cell(StringVal('real'), 0, RealVal(50.0), StringVal('')))
 
-#     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-#     output_table = Store(output_table, StringVal('Age'), output_age_rows)
-#     output_table = Store(output_table, StringVal('Max Score'), output_score_rows)
-#     output_col_names = ['Age', 'Max Score']
-#     num_output_rows = 2
+    # output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    # output_table = Store(output_table, StringVal('Age'), output_age_rows)
+    # output_table = Store(output_table, StringVal('Max Score'), output_score_rows)
+    # output_col_names = ['Age', 'Max Score']
+    # num_output_rows = 2
 
-#     print('Test having 1')
-#     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
-#     print('')
+    # print('Test having 1')
+    # solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    # print('')
 
 #     Test having 1
 # Query generated:
 # "SELECT Age AS Age, MAX(Score) AS Max Score FROM input_table GROUP BY Age HAVING MAX(Score) != 99/10"
 # with having in time 83.11 
 
-    #  # OUTPUT TABLE sum score
-    # output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    # output_age_rows = Store(output_age_rows, 0, cell(StringVal('real'), 0, RealVal(222.4), StringVal('')))
+     # OUTPUT TABLE sum score
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('real'), 0, RealVal(222.4), StringVal('')))
 
-    # output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-    # output_table = Store(output_table, StringVal('Sum_score'), output_age_rows)
-    # output_col_names = ['Sum_score']
-    # num_output_rows = 1
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Sum_score'), output_age_rows)
+    output_col_names = ['Sum_score']
+    num_output_rows = 1
 
-    # print('Test sum score')
-    # solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
-    # print('')
+    print('Test sum score')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
-    # # OUTPUT TABLE count 1
-    # output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    # output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 5, RealVal(5), StringVal('')))
 
-    # output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-    # output_table = Store(output_table, StringVal('Count'), output_age_rows)
-    # output_col_names = ['Count']
-    # num_output_rows = 1
+# Test sum score
+# Query generated:
+# "SELECT SUM(Score) AS Sum_score FROM input_table WHERE Age >= 19"
+# with group by, in time 92.73
 
-    # print('Test count 1 - count number of rows')
-    # solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
-    # print('')
 
-    # OUTPUT TABLE count 2
-    # output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    # output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 1, RealVal(1), StringVal('')))
-    # output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 1, RealVal(1), StringVal('')))
-    # output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 3, RealVal(3), StringVal('')))
 
-    # output_age_rows2 = Array('output_age_row2', IntSort(), Cell)
-    # output_age_rows2 = Store(output_age_rows2, 0, cell(StringVal('int'), 19, RealVal(19), StringVal('')))
-    # output_age_rows2 = Store(output_age_rows2, 1, cell(StringVal('int'), 21, RealVal(21), StringVal('')))
-    # output_age_rows2 = Store(output_age_rows2, 2, cell(StringVal('int'), 22, RealVal(22), StringVal('')))
+    # OUTPUT TABLE count 1
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 5, RealVal(5), StringVal('')))
 
-    # output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-    # output_table = Store(output_table, StringVal('Age'), output_age_rows2)
-    # output_table = Store(output_table, StringVal('Count'), output_age_rows)
-    # output_col_names = ['Age', 'Count']
-    # num_output_rows = 3
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Count'), output_age_rows)
+    output_col_names = ['Count']
+    num_output_rows = 1
 
-    # print('Test count 2 - group 3 together by name')
-    # solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
-    # print('')
+    print('Test count 1 - count number of rows')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
-    # # OUTPUT TABLE avg score
-    # output_age_rows = Array('output_age_rows', IntSort(), Cell)
-    # output_age_rows = Store(output_age_rows, 0, cell(StringVal('real'), 0, RealVal(44.48), StringVal('')))
+#     OUTPUT TABLE count 2
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('int'), 1, RealVal(1), StringVal('')))
+    output_age_rows = Store(output_age_rows, 1, cell(StringVal('int'), 1, RealVal(1), StringVal('')))
+    output_age_rows = Store(output_age_rows, 2, cell(StringVal('int'), 3, RealVal(3), StringVal('')))
 
-    # output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-    # output_table = Store(output_table, StringVal('Avg Score'), output_age_rows)
-    # output_col_names = ['Avg Score']
-    # num_output_rows = 1
+    output_age_rows2 = Array('output_age_row2', IntSort(), Cell)
+    output_age_rows2 = Store(output_age_rows2, 0, cell(StringVal('int'), 19, RealVal(19), StringVal('')))
+    output_age_rows2 = Store(output_age_rows2, 1, cell(StringVal('int'), 21, RealVal(21), StringVal('')))
+    output_age_rows2 = Store(output_age_rows2, 2, cell(StringVal('int'), 22, RealVal(22), StringVal('')))
 
-    # print('Test avg score')
-    # solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
-    # print('')
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Age'), output_age_rows2)
+    output_table = Store(output_table, StringVal('Count'), output_age_rows)
+    output_col_names = ['Age', 'Count']
+    num_output_rows = 3
+
+    print('Test count 2 - group 3 together by name')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
+
+    # OUTPUT TABLE avg score
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    output_age_rows = Store(output_age_rows, 0, cell(StringVal('real'), 0, RealVal(44.48), StringVal('')))
+
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Avg Score'), output_age_rows)
+    output_col_names = ['Avg Score']
+    num_output_rows = 1
+
+    print('Test avg score')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
     # OUTPUT TABLE avg age
 #     output_age_rows = Array('output_age_rows', IntSort(), Cell)
@@ -168,27 +176,27 @@ if __name__ == "__main__":
 #     print('')
 
 
-#     # OUTPUT TABLE 5
-#     output_age_rows = Array('output_age_rows', IntSort(), Cell)
+    # OUTPUT TABLE 5
+    output_age_rows = Array('output_age_rows', IntSort(), Cell)
 
-#     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-#     output_table = Store(output_table, StringVal('Age'), output_age_rows)
-#     output_col_names = ['Age']
-#     num_output_rows = 0
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_table = Store(output_table, StringVal('Age'), output_age_rows)
+    output_col_names = ['Age']
+    num_output_rows = 0
 
-#     print('Test 5 - empty output table')
-#     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
-#     print('')
+    print('Test 5 - empty output table')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
 
-#     # OUTPUT TABLE 6
-#     output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
-#     output_col_names = []
-#     num_output_rows = 0
+    # OUTPUT TABLE 6
+    output_table = Array('output_table', StringSort(), ArraySort(IntSort(), Cell))
+    output_col_names = []
+    num_output_rows = 0
 
-#     print('Test 6 - should be unsat')
-#     solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
-#     print('')
+    print('Test 6 - should be unsat')
+    solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows)
+    print('')
 
 
     # OUTPUT TABLE 7
@@ -343,4 +351,10 @@ if __name__ == "__main__":
 # Query generated:
 # "SELECT COUNT(Score) AS number, MIN(Score) AS score FROM input_table WHERE Score >= 50 GROUP BY Age"
 # with group by, in time 530.41
+
+# "SELECT COUNT(Age) AS number, Score AS score FROM input_table WHERE Score >= 50 GROUP BY Age"
+# with group by, in time 51.25
+
+# "SELECT COUNT(Score) AS number, MIN(Score) AS score FROM input_table WHERE Score > 25/2 GROUP BY Age"
+# with group by, in time 2050.02
 
