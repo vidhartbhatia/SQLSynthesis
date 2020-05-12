@@ -283,115 +283,147 @@ with the output table.
 Testing and Results
 ===================
 
-Test 1: Input Table Test 2: Output Table Test 1: Generated Query
+**Test 1: Input Table Test 1: Output Table Test 1: Generated Query**
 
-  **Name**   **Age**   **Score**
-  ---------- --------- -----------
-  Vidhart    22        12.5
-  Udit       22        50.0
-  Ebru       19        9.9
-  Jeremy     21        100.0
-  Medha      22        50.0
+| **Name** | **Age** | **Score** |
+| --- | --- | --- |
+| Vidhart | 22 | 12.5 |
+| Udit | 22 | 50.0 |
+| Ebru | 19 | 9.9 |
+| Jeremy | 21 | 100.0 |
+| Medha | 22 | 50.0 |
 
-  **NAMES**   **AGES**
-  ----------- ----------
-  Vidhart     22
-  Udit        22
-  Ebru        19
-  Jeremy      21
-  Medha       22
+| **NAMES** | **AGES** |
+| --- | --- |
+| Vidhart | 22 |
+| Udit | 22 |
+| Ebru | 19 |
+| Jeremy | 21 |
+| Medha | 22 |
 
-Test 2: Input Table Test 2: Output Table Test 2: Generated Query
 
-  **Name**   **Age**   **Score**
-  ---------- --------- -----------
-  Vidhart    22        12.5
-  Udit       22        50.0
-  Ebru       19        9.9
-  Jeremy     21        100.0
-  Medha      22        50.0
+&quot;SELECT Name AS NAMES, Age as AGES FROM input\_table&quot;
 
-  **Passing**   **Score**
-  ------------- -----------
-  Udit          50.0
-  Jeremy        100.0
-  Medha         50.0
+~ \&lt; 0.5 seconds
 
-Test 3: Input Table Test 3: Output Table Test 3: Generated Query
+---
 
-  **Name**   **Age**   **Score**
-  ---------- --------- -----------
-  Vidhart    22        12.5
-  Udit       22        50.0
-  Ebru       19        9.9
-  Jeremy     21        100.0
-  Medha      22        50.0
+**Test 2: Input Table Test 2: Output Table Test 2: Generated Query**
 
-  **Avg Score**
-  ---------------
-  44.48
+| **Name** | **Age** | **Score** |
+| --- | --- | --- |
+| Vidhart | 22 | 12.5 |
+| Udit | 22 | 50.0 |
+| Ebru | 19 | 9.9 |
+| Jeremy | 21 | 100.0 |
+| Medha | 22 | 50.0 |
 
-Test 4: Input Table Test 4: Output Table Test 4: Generated Query
+| **Passing** | **Score** |
+| --- | --- |
+| Udit | 50.0 |
+| Jeremy | 100.0 |
+| Medha | 50.0 |
 
-  **Name**   **Age**   **Score**
-  ---------- --------- -----------
-  Vidhart    22        12.5
-  Udit       22        50.0
-  Ebru       19        9.9
-  Jeremy     21        100.0
-  Medha      22        50.0
 
-  **Age**   **Count**
-  --------- -----------
-  22        3
-  21        1
-  19        1
+&quot;SELECT Name AS Passing, Score AS score FROM input\_table WHERE Score \&gt;= 50&quot;
 
-Correct query: SELECT Age AS Age, COUNT(Age) AS Count FROM input\_table
-GROUP BY Age\
-As we can see, the query generated was not wrong, but made us of a MIN
-that wasn’t necessary. Since a system of constraints can have multiple
-satisfying assignments, and we can’t control which one Z3 will pick,
-some of our results have added clauses or aggregates that don’t make the
-query incorrect, but aren’t necessary.
+~ \&lt; 0.5 seconds
 
-Test 5: Input Table Test 5: Output Table Test 5: Generated Query
+---
 
-  **Name**   **Age**   **Score**
-  ---------- --------- -----------
-  Vidhart    22        12.5
-  Udit       22        50.0
-  Ebru       19        9.9
-  Jeremy     21        100.0
-  Medha      22        50.0
+**Test 3: Input Table Test 3: Output Table Test 3: Generated Query**
 
-  **Age**   **Max Score**
-  --------- ---------------
-  22        50
-  21        100
+| **Name** | **Age** | **Score** |
+| --- | --- | --- |
+| Vidhart | 22 | 12.5 |
+| Udit | 22 | 50.0 |
+| Ebru | 19 | 9.9 |
+| Jeremy | 21 | 100.0 |
+| Medha | 22 | 50.0 |
 
-Alternate Query generated: "SELECT Age AS Age, MAX(Score) AS Max Score
-FROM input\_table WHERE Score &gt;= 25/2 GROUP BY Age"
+| **Avg Score** |
+| --- |
+| 44.48 |
 
-Test 6: Input Table Test 6: Output Table Test 6: Generated Query
 
-  **Name**   **Age**   **Score**
-  ---------- --------- -----------
-  Vidhart    19        75.0
-  Udit       20        50
-  Ebru       21        9.9
-  Jeremy     21        100.0
-  Medha      22        12.5
+&quot;SELECT AVG(Score) AS Avg Score FROM input\_table&quot;
 
-  **Age**   **Sum**
-  --------- ---------
-  19        75.0
-  21        109.9
+~ 13 seconds
 
-Alternate query generated: "SELECT Age AS Age, SUM(Score) AS Sum of
-Scores FROM input\_table WHERE Name &gt;= "Ebru" GROUP BY Age HAVING
-SUM(Score) &gt;= 75"\
-This query is not wrong, but includes an unnecessary WHERE clause.
+---
+
+**Test 4: Input Table Test 4: Output Table Test 4: Generated Query**
+
+| **Name** | **Age** | **Score** |
+| --- | --- | --- |
+| Vidhart | 22 | 12.5 |
+| Udit | 22 | 50.0 |
+| Ebru | 19 | 9.9 |
+| Jeremy | 21 | 100.0 |
+| Medha | 22 | 50.0 |
+
+| **Age** | **Count** |
+| --- | --- |
+| 22 | 3 |
+| 21 | 1 |
+| 19 | 1 |
+
+
+&quot;SELECT MIN(Age) AS Age, COUNT(Age) AS Count FROM input\_table GROUP BY Age&quot;
+
+~ 50 seconds
+
+
+Correct query: SELECT Age AS Age, COUNT(Age) AS Count FROM input\_table GROUP BY Age
+As we can see, the query generated was not wrong, but made us of a MIN that wasn&#39;t necessary.
+
+---
+
+**Test 5: Input Table Test 5: Output Table Test 5: Generated Query**
+
+| **Name** | **Age** | **Score** |
+| --- | --- | --- |
+| Vidhart | 22 | 12.5 |
+| Udit | 22 | 50.0 |
+| Ebru | 19 | 9.9 |
+| Jeremy | 21 | 100.0 |
+| Medha | 22 | 50.0 |
+
+| **Age** | **Max Score** |
+| --- | --- |
+| 22 | 50 |
+| 21 | 100 |
+
+&quot;SELECT Age AS Age, MAX(Score) AS Max Score FROM input\_table GROUP BY Age HAVING MAX(Score) != 99/10&quot;
+
+~ 90 seconds
+
+Alternate Query generated: &quot;SELECT Age AS Age, MAX(Score) AS Max Score FROM input\_table WHERE Score \&gt;= 25/2 GROUP BY Age&quot;
+
+---
+
+**Test 6: Input Table Test 6: Output Table Test 6: Generated Query**
+
+| **Name** | **Age** | **Score** |
+| --- | --- | --- |
+| Vidhart | 19 | 75.0 |
+| Udit | 20 | 50 |
+| Ebru | 21 | 9.9 |
+| Jeremy | 21 | 100.0 |
+| Medha | 22 | 12.5 |
+
+| **Age** | **Sum** |
+| --- | --- |
+| 19 | 75.0 |
+| 21 | 109.9 |
+
+
+&quot;SELECT Age AS Age, SUM(Score) AS Sum of Scores FROM input\_table GROUP BY Age HAVING SUM(Score) \&gt;= 75&quot;
+
+~ 2 mins
+
+Alternate query generated: &quot;SELECT Age AS Age, SUM(Score) AS Sum of Scores FROM input\_table WHERE Name \&gt;= &quot;Ebru&quot; GROUP BY Age HAVING SUM(Score) \&gt;= 75&quot;
+This query is not wrong, but includes an unnecessary where clause.
 
 This is just a subset of the tests we ran, but overall, our
 implementation was able to synthesize all the queries correctly.
