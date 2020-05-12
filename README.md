@@ -144,14 +144,13 @@ Unknowns and Domain constraints
 
 The constraints placed on the unknowns in our template are as follows:
 
--   **select\_col\_i** $\mathbf{\in}$ **input columns ∪ aggregate
+-   **select\_col\_i** ∈ **input columns ∪ aggregate
     columns.**\
     The set of aggregate columns is defined in section 4.4 below.
 
--   **where\_col** $\mathbf{\in}$ **input columns**
+-   **where\_col** ∈ **input columns**
 
--   **having\_col** $\mathbf{\in}$ **aggregate columns** $\mathbf{\cap}$
-    **select columns.**\
+-   **having\_col** ∈ **aggregate columns** ∪ **select columns.**\
     The column in the HAVING clause must be an aggregate, and must be a
     column in the SELECT clause.
 
