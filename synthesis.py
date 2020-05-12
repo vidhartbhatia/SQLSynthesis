@@ -12,10 +12,10 @@ cellInt = Cell.int
 cellReal = Cell.real
 cellString = Cell.string
 
-# Operators supported in WHERE and HAVING cl
+# Operators supported in WHERE and HAVING clauses
 operators = ["=", "!=", "<", ">", "<=", ">="]
 
-# cell dataype helper functions
+# Cell dataype helper functions
 def cellEqual(c1, c2):
     return And(cellType(c1) == cellType(c2), cellInt(c1) == cellInt(c2), cellReal(c1) == cellReal(c2), cellString(c1) == cellString(c2))
 
@@ -34,17 +34,6 @@ def cellLTE(c1, c2):
 def cellGTE(c1, c2):
     return And(cellType(c1) == cellType(c2), And(cellInt(c1) >= cellInt(c2), cellReal(c1) >= cellReal(c2), cellString(c1) >= cellString(c2)))
 
-def satisfies_where_helper(input_table, r, where_col_name, where_operator, where_constant):
-    return If(where_operator == StringVal("="), cellEqual(input_table[where_col_name][r], where_constant), \
-    If(where_operator == StringVal("!="), cellNotEqual(input_table[where_col_name][r], where_constant), \
-    If(where_operator == StringVal("<"), cellLessThan(input_table[where_col_name][r], where_constant), \
-    If(where_operator == StringVal(">"), cellGreaterThan(input_table[where_col_name][r], where_constant), \
-    If(where_operator == StringVal("<="), cellLTE(input_table[where_col_name][r], where_constant), \
-    If(where_operator == StringVal(">="), cellGTE(input_table[where_col_name][r], where_constant), False))))))
-
-def satisfies_where(input_table, r, where_col_name, where_operator, where_constant, where_clause_missing):
-    return If(where_clause_missing, True, satisfies_where_helper(input_table, r, where_col_name, where_operator, where_constant))
-
 def cellAdd(c1, c2):
     return cell(cellType(c1), cellInt(c1) + cellInt(c2), cellReal(c1) + cellReal(c2), StringVal(''))
 
@@ -57,13 +46,25 @@ def cellMax(c1, c2):
 def cellMin(c1, c2):
     return If(cellLessThan(c1, c2), c1, c2)
 
-# based on having and group by paramters generate contraints, check SAT and output query if found, else reurn false
-def generateSQL(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, runWithGroupBy, runWithHaving):
+# Returns true if a row satisfies the WHERE or HAVING clause passed in, and false otherwise
+def satisfies_where_helper(input_table, r, where_col_name, where_operator, where_constant):
+    return If(where_operator == StringVal("="), cellEqual(input_table[where_col_name][r], where_constant), \
+    If(where_operator == StringVal("!="), cellNotEqual(input_table[where_col_name][r], where_constant), \
+    If(where_operator == StringVal("<"), cellLessThan(input_table[where_col_name][r], where_constant), \
+    If(where_operator == StringVal(">"), cellGreaterThan(input_table[where_col_name][r], where_constant), \
+    If(where_operator == StringVal("<="), cellLTE(input_table[where_col_name][r], where_constant), \
+    If(where_operator == StringVal(">="), cellGTE(input_table[where_col_name][r], where_constant), False))))))
 
+# Returns true if a row satisfies the WHERE/HAVING clause passed in OR if the WHERE/HAVING clause is missing, and false otherwise
+def satisfies_where(input_table, r, where_col_name, where_operator, where_constant, where_clause_missing):
+    return If(where_clause_missing, True, satisfies_where_helper(input_table, r, where_col_name, where_operator, where_constant))
+
+# Based on having and group by paramters, generate contraints, check SAT and output query if found, else return false
+def generateSQL(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows, runWithGroupBy, runWithHaving):
     solver = Solver()
     aggregate_col_names = []
     if runWithGroupBy:
-        # aggregate columns
+        # Aggregate columns
         aggregate_col_names = [ 'MAX', 'MIN', 'SUM', 'COUNT', 'AVG' ]
         aggregate_column = String('aggregate_column')
         solver.add(Or([aggregate_column == StringVal(input_col_name) for input_col_name in input_col_names]))
@@ -91,12 +92,12 @@ def generateSQL(input_table, input_col_names, num_input_rows, output_table, outp
         constraint = Or(constraint, cellEqual(where_constant, input_table[where_col_name][r]))
     solver.add(constraint)
 
-    # booleans representing if row r satisfies where predicate
+    # Booleans representing if row r satisfies WHERE predicate
     r_where_bools = [Bool(f'r{i}_satisfies_where') for i in range(num_input_rows)]
     solver.add(And([r_where_bools[r] == satisfies_where(input_table,r, where_col_name, where_operator, where_constant, where_clause_missing) for r in range(num_input_rows)]))
 
     if runWithGroupBy:
-        # add unique and equal cols
+        # Add unique and equal cols
         unique_rows = Array('unique_rows', IntSort(), Cell)
         equal_rows = Array('equal_rows', IntSort(), Cell)
         for i in range(num_input_rows):
@@ -107,7 +108,7 @@ def generateSQL(input_table, input_col_names, num_input_rows, output_table, outp
         input_table = Store(input_table, StringVal('equal_rows'), equal_rows)
         group_by_column_names = ['unique_rows', 'equal_rows']
 
-        # GROUP BY unknown(s)
+        # GROUP BY unknown
         group_by_col_name = String('group_by_col_name')
 
         # GROUP BY domain constraints
@@ -145,23 +146,7 @@ def generateSQL(input_table, input_col_names, num_input_rows, output_table, outp
         # AVG
         avg_rows = Array('avg_rows', IntSort(), Cell)
 
-        for r in range(num_input_rows):
-            # sum_cell = input_table[StringVal('SUM')][r]
-            # sum_type = cellType(sum_cell)
-            # avg = If(sum_type == StringVal('int'), cellInt(sum_cell), If(sum_type == StringVal('real'), cellReal(sum_cell), RealVal(0))) / cellInt(input_table[StringVal('COUNT')][r])
-            # avg = cellReal(input_table[StringVal('SUM')][r]) / cellReal(input_table[StringVal('COUNT')][r])
-            
-            # avg = If(count_real == RealVal(0), RealVal(0), If(sum_type == StringVal('int'), cellInt(sum_cell), If(sum_type == StringVal('real'), cellReal(sum_cell), 0)) / count_real)
-            
-            # count = cellInt(input_table[StringVal('COUNT')][r])
-            # avg = If(count == 0, RealVal(0), cellInt(sum_cell) / count)
-
-            # count_real = cellReal(input_table[StringVal('COUNT')][r])
-            # count_real = cellReal(count_rows[r])
-            # avg = If(count_real == RealVal(0), RealVal(0), cellReal(sum_rows[r]) / count_real)
-            # count_real = cellReal(count_rows[r])
-            # solver.add(Not(count_real == RealVal(0)))
-            
+        for r in range(num_input_rows):            
             # TODO fix hardcoded 5
             avg_rows = Store(avg_rows, r, cell(StringVal('real'), 0, cellReal(sum_rows[r]) / RealVal(5), StringVal('')))
         
@@ -209,12 +194,11 @@ def generateSQL(input_table, input_col_names, num_input_rows, output_table, outp
             constraint = Or(constraint, cellEqual(having_constant, input_table[having_col_name][r]))
         solver.add(constraint)
 
-        # booleans representing if row r satisfies HAVING predicate
+        # Booleans representing if row r satisfies HAVING predicate
         r_having_bools = [Bool(f'r{i}_satisfies_having') for i in range(num_input_rows)]
         solver.add(And([r_having_bools[r] == satisfies_where(input_table, r, having_col_name, having_operator, having_constant, having_clause_missing) for r in range(num_input_rows)]))
 
-    # row constraints
-    # TODO: Optimization
+    # Row constraints
     s_vars = []
     r_vars = []
     for r in range(num_input_rows):
@@ -258,10 +242,7 @@ def generateSQL(input_table, input_col_names, num_input_rows, output_table, outp
                 solver.add(r_vars[i] != r_vars[j])
     
     if solver.check() == sat:
-        # print((solver.model().eval(simplify(input_table[StringVal("AVG")]))))
         print("Query generated:")
-        # print(solver)
-        # print(solver.model())
         # Generate query 
         # the SELECT part
         b = False
@@ -314,7 +295,6 @@ def generateSQL(input_table, input_col_names, num_input_rows, output_table, outp
         return False
     
 
-    # print(sat)
 def solve(input_table, input_col_names, num_input_rows, output_table, output_col_names, num_output_rows):
     set_param('parallel.enable', True)
     z3.set_param('sat.local_search_threads', 16)
